@@ -12,18 +12,21 @@ import com.vaadin.flow.data.provider.SortDirection;
 import de.hsos.geois.ws2021.data.EntityManagerHandler;
 import de.hsos.geois.ws2021.data.entity.Customer;
 import de.hsos.geois.ws2021.data.entity.Device;
+import de.hsos.geois.ws2021.data.entity.DeviceOrder;
 
 @Service
-public class DeviceOrderDataService extends DataService<Device> {
+public class DeviceOrderDataService extends DataService<DeviceOrder> {
 
 	private static final long serialVersionUID = -379955969301984768L;
 
 	private static DeviceOrderDataService INSTANCE;
     
-    public static final String SORT_ON_ID = "d.id";
-	public static final String SORT_ON_NAME = "d.name";
-	public static final String SORT_ON_ARTNR = "d.artNr";
-	public static final String SORT_ON_SERIALNR = "d.serialNr";
+    public static final String SORT_ON_ID = "do.id";
+	public static final String SORT_ON_PRODUCER = "do.producer";
+	public static final String SORT_ON_DEVICEMODEL = "do.deviceModel";
+	public static final String SORT_ON_QUANTITY = "do.quantity";
+	public static final String SORT_ON_ORDERDATE = "do.orderDate";
+	public static final String SORT_ON_DELIVERYDATE = "do.deliveryDate";
 	
 	private DeviceOrderDataService() {
 		super();
@@ -40,60 +43,60 @@ public class DeviceOrderDataService extends DataService<Device> {
 	}
 	
 	@Override
-	public Device newEntity() {
-		return new Device();
+	public DeviceOrder newEntity() {
+		return new DeviceOrder();
 	}
 
 	@Override
 	protected String getByIdQuery() {
-		return "SELECT d FROM Device d WHERE d.id = :id";
+		return "SELECT do FROM DeviceOrder do WHERE do.id = :id";
 	}
 
 	@Override
 	protected String getAllQuery() {
-		return "SELECT d FROM Device d ORDER BY d.name";
+		return "SELECT do FROM DeviceOrder do ORDER BY d.orderDate";
 	}
 
 	@Override
-	protected Class<Device> getEntityClass() {
-		return Device.class;
+	protected Class<DeviceOrder> getEntityClass() {
+		return DeviceOrder.class;
 	}
 	
-	public int countDevices(String filter) {
-		String queryString = "SELECT count(d) FROM Device d WHERE (CONCAT(d.id, '') LIKE :filter "
-				+ "OR LOWER(d.name) LIKE :filter "
-				+ "OR LOWER(d.artNr) LIKE :filter "
-				+ "OR LOWER(d.serialNr) LIKE :filter)";
+	public int countDeviceOrders(String filter) {
+		String queryString = "SELECT count(do) FROM DeviceOrder do WHERE (CONCAT(do.id, '') LIKE :filter "
+				+ "OR LOWER(do.producer) LIKE :filter "
+				+ "OR LOWER(do.deviceModel) LIKE :filter "
+				+ "OR LOWER(do.orderDate) LIKE :filter)";
 		return super.count(queryString, filter);
 	}
 	
-	public Collection<Device> fetchDevices(String filter, int limit, int offset, List<QuerySortOrder> sortOrders) {
+	public Collection<DeviceOrder> fetchDeviceOrders(String filter, int limit, int offset, List<QuerySortOrder> sortOrders) {
 		
 		final String preparedFilter = prepareFilter(filter);
 		
 		// By default sort on name
 		if (sortOrders == null || sortOrders.isEmpty()) {
 			sortOrders = new ArrayList<>();
-		    sortOrders.add(new QuerySortOrder(SORT_ON_NAME, SortDirection.ASCENDING));
+		    sortOrders.add(new QuerySortOrder(SORT_ON_ID, SortDirection.ASCENDING));
 		}
 		
 		String sortString = getSortingString(sortOrders);
 		
-		String queryString = "SELECT d FROM Device d WHERE (CONCAT(d.id, '') LIKE :filter "
-				+ "OR LOWER(d.name) LIKE :filter "
-				+ "OR LOWER(d.artNr) LIKE :filter "
-				+ "OR LOWER(d.serialNr) LIKE :filter)" + sortString;
+		String queryString = "SELECT do FROM DeviceOrder do WHERE (CONCAT(do.id, '') LIKE :filter "
+				+ "OR LOWER(do.producer) LIKE :filter "
+				+ "OR LOWER(do.deviceModel) LIKE :filter "
+				+ "OR LOWER(do.orderDate) LIKE :filter)" + sortString;
 		
-		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, Device.class)
+		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, DeviceOrder.class)
 				 .setParameter("filter", preparedFilter)
 				 .setFirstResult(offset)
 			     .setMaxResults(limit)
 				 .getResultList());
 	}
 
-	public Collection<Device> getDevicesOfCustomer(Customer customer) {
-		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT d FROM Device d WHERE d.customer = :customer ORDER BY d.name", Device.class)
-				.setParameter("customer", customer)
+	public Collection<DeviceOrder> getDeviceOrderssOfProducer(String producer) {
+		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT do FROM DeviceOrder do WHERE do.producer = :producer ORDER BY do.id", DeviceOrder.class)
+				.setParameter("producer", producer)
 				.getResultList());
 	}
 }
