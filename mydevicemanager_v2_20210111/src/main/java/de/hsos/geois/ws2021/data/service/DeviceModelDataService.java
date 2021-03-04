@@ -11,6 +11,7 @@ import com.vaadin.flow.data.provider.SortDirection;
 
 import de.hsos.geois.ws2021.data.EntityManagerHandler;
 import de.hsos.geois.ws2021.data.entity.DeviceModel;
+import de.hsos.geois.ws2021.data.entity.Producer;
 
 @Service
 public class DeviceModelDataService extends DataService<DeviceModel> {
@@ -87,9 +88,9 @@ public class DeviceModelDataService extends DataService<DeviceModel> {
 				 .getResultList());
 	}
 
-//	public Collection<DeviceModel> getDeviceModelssOfCustomer(Customer customer) {
-//		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT d FROM Device d WHERE d.customer = :customer ORDER BY d.name", Device.class)
-//				.setParameter("customer", customer)
-//				.getResultList());
-//	}
+	public Collection<DeviceModel> getDeviceModelsOfProducer(Producer producer) {
+		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT dm FROM DeviceModel dm WHERE dm.producer = :producer ORDER BY dm.name", DeviceModel.class)
+				.setParameter("producer", producer)
+				.getResultList());
+	}
 }

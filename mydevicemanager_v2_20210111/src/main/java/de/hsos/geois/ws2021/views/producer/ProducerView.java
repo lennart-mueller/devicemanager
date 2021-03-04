@@ -6,7 +6,6 @@ import java.util.Collection;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -23,12 +22,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
-import de.hsos.geois.ws2021.data.entity.Device;
+import de.hsos.geois.ws2021.data.entity.DeviceModel;
 import de.hsos.geois.ws2021.data.entity.Producer;
-import de.hsos.geois.ws2021.data.entity.Customer;
-import de.hsos.geois.ws2021.data.service.DeviceDataService;
+import de.hsos.geois.ws2021.data.service.DeviceModelDataService;
 import de.hsos.geois.ws2021.data.service.ProducerDataService;
-import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "producer", layout = MainView.class)
@@ -37,7 +34,7 @@ import de.hsos.geois.ws2021.views.MainView;
 @RouteAlias(value = "producer", layout = MainView.class)
 public class ProducerView extends Div {
 	
-	private static final long serialVersionUID = 664963043813506218L;
+	private static final long serialVersionUID = -3436063662854717622L;
 
 	private Grid<Producer> grid;
 	
@@ -53,7 +50,7 @@ public class ProducerView extends Div {
     private TextField place = new TextField();
     private TextField zipCode = new TextField();
     
-    private Grid<Device> deviceGrid = new Grid<Device>();
+    private Grid<DeviceModel> deviceModelGrid = new Grid<DeviceModel>();
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
@@ -78,9 +75,9 @@ public class ProducerView extends Div {
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
             	Producer producerFromBackend = producerService.getById(event.getValue().getId());
-//                Collection<Device> devices =  DeviceDataService.getInstance().getDevicesOfCustomer(producerFromBackend);
-//                System.out.println("Beim Laden des CustomerFromBackend " + devices.size());
-//                deviceGrid.setItems(devices);
+                Collection<DeviceModel> deviceModels =  DeviceModelDataService.getInstance().getDeviceModelsOfProducer(producerFromBackend);
+                System.out.println("Beim Laden des ProducerFromBackend " + deviceModels.size());
+                deviceModelGrid.setItems(deviceModels);
                 
                 // when a row is selected but the data is no longer available, refresh grid
                 if (producerFromBackend != null) {
@@ -113,9 +110,9 @@ public class ProducerView extends Div {
                 this.producer = producerService.update(this.producer);
                 clearForm();
                 refreshGrid();
-                Notification.show("Customer details stored.");
+                Notification.show("Producer details stored.");
             } catch (ValidationException validationException) {
-                Notification.show("An exception happened while trying to store the user details.");
+                Notification.show("An exception happened while trying to store the producer details.");
             }
         });
        
@@ -130,7 +127,7 @@ public class ProducerView extends Div {
     }
 
     /**
-     * Creates the CustomerForm
+     * Creates the ProducerForm
      * @param splitLayout
      */
     private void createEditorLayout(SplitLayout splitLayout) {
@@ -154,31 +151,30 @@ public class ProducerView extends Div {
         addFormItem(editorDiv, formLayout, place, "Place");
         
         // add grid
-//        deviceGrid.addColumn(Device::getArtNr).setHeader("ArtNr");
-//        deviceGrid.addColumn(Device::getName).setHeader("Name");
-//        deviceGrid.addColumn(Device::getSerialNr).setHeader("SerialNr");
-//        deviceGrid.addColumn(Device::getSalesPrice).setHeader("SalesPrice");
-//        deviceGrid.addColumn(
-//        	    new NativeButtonRenderer<>("Remove Device",
-//        	       clickedDevice -> {
-//        	           this.customer.removeDevice(clickedDevice);
-//        	           clickedDevice.setCustomer(null);
-//					   // persist customer
-//        	           try {
-//							binder.writeBean(this.customer);
-//							this.customer = customerService.update(this.customer);
-//						} catch (ValidationException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					   // persist clickedDevice
-//        	           DeviceDataService.getInstance().save(clickedDevice);
-//        	           populateForm(this.customer);
-//        	    })
-//        	);
-//        deviceGrid.setWidthFull();
-//        
-//        formLayout.add(deviceGrid);
+        deviceModelGrid.addColumn(DeviceModel::getArtNr).setHeader("ArtNr");
+        deviceModelGrid.addColumn(DeviceModel::getName).setHeader("Name");
+        deviceModelGrid.addColumn(DeviceModel::getPurchasePrice).setHeader("PurchasePrice");
+        deviceModelGrid.addColumn(
+        	    new NativeButtonRenderer<>("Remove Device Model",
+        	       clickedDeviceModel -> {
+        	           this.producer.removeDeviceModel(clickedDeviceModel);
+        	           clickedDeviceModel.setProducer(null);
+					   // persist customer
+        	           try {
+							binder.writeBean(this.producer);
+							this.producer = producerService.update(this.producer);
+						} catch (ValidationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					   // persist clickedDevice
+        	           DeviceModelDataService.getInstance().save(clickedDeviceModel);
+        	           populateForm(this.producer);
+        	    })
+        	);
+        deviceModelGrid.setWidthFull();
+        
+        formLayout.add(deviceModelGrid);
         
         createButtonLayout(editorLayoutDiv);
 
@@ -226,7 +222,7 @@ public class ProducerView extends Div {
     		binder.bindInstanceFields(this);
 //	        deviceGrid.setItems(this.customer.getDevices());
     	} else {
-    		deviceGrid.setItems(new ArrayList<Device>());
+    		deviceModelGrid.setItems(new ArrayList<DeviceModel>());
     	}
     }
 }

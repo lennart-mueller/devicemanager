@@ -1,11 +1,15 @@
 package de.hsos.geois.ws2021.data.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
@@ -14,8 +18,11 @@ public class DeviceModel extends AbstractEntity {
 
 	private String name;
 	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	private Customer customer;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Producer producer;
+	
+	@OneToMany(mappedBy = "deviceModel", cascade = CascadeType.ALL, orphanRemoval = false)
+	private Collection<DeviceOrder> deviceOrders;
 	
 	@Column(unique=true)
 	private String artNr;
@@ -23,6 +30,11 @@ public class DeviceModel extends AbstractEntity {
 	@Column(precision = 7, scale = 2)
 	private BigDecimal purchasePrice, salesPrice;
 
+	
+	public DeviceModel() {
+		this.deviceOrders = new ArrayList<DeviceOrder>();
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -55,13 +67,33 @@ public class DeviceModel extends AbstractEntity {
 		this.salesPrice = salesPrice;
 	}
 
-//	public Customer getCustomer() {
-//		return customer;
-//	}
-//
-//	public void setCustomer(Customer customer) {
-//		this.customer = customer;
-//	}
+	public Producer getProducer() {
+		return producer;
+	}
+
+	public void setProducer(Producer producer) {
+		this.producer = producer;
+	}
+	
+	public Collection<DeviceOrder> getDeviceOrders() {
+		return deviceOrders;
+	}
+
+	public void setDeviceOrders(Collection<DeviceOrder> deviceOrders) {
+		this.deviceOrders = deviceOrders;
+	}
+	
+	public boolean addDeviceOrder(DeviceOrder deviceOrder) {
+		return getDeviceOrders().add(deviceOrder);
+	}
+	
+	public boolean removeDeviceOrder(DeviceOrder deviceOrder) {
+		return getDeviceOrders().remove(deviceOrder);
+	}
+	
+	public String toString() {
+		return getName();
+	}	
 	
 //	@Override
 //    public boolean equals(Object o) {

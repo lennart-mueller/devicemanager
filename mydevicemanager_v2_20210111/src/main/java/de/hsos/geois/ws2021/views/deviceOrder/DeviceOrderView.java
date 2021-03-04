@@ -29,9 +29,13 @@ import com.vaadin.flow.router.RouteAlias;
 
 import de.hsos.geois.ws2021.data.entity.Customer;
 import de.hsos.geois.ws2021.data.entity.Device;
+import de.hsos.geois.ws2021.data.entity.DeviceModel;
 import de.hsos.geois.ws2021.data.entity.DeviceOrder;
+import de.hsos.geois.ws2021.data.entity.Producer;
 import de.hsos.geois.ws2021.data.service.CustomerDataService;
+import de.hsos.geois.ws2021.data.service.DeviceModelDataService;
 import de.hsos.geois.ws2021.data.service.DeviceOrderDataService;
+import de.hsos.geois.ws2021.data.service.ProducerDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "device-order", layout = MainView.class)
@@ -44,8 +48,8 @@ public class DeviceOrderView extends Div {
 
 //	private Grid<Device> grid;
 	
-	private ComboBox<String> producer = new ComboBox<>();
-	private ComboBox<String> deviceModel = new ComboBox<>();
+	private ComboBox<Producer> producer = new ComboBox<>();
+	private ComboBox<DeviceModel> deviceModel = new ComboBox<>();
 	private IntegerField quantity = new IntegerField();
 	private DatePicker deliveryDate = new DatePicker();
 
@@ -71,29 +75,45 @@ public class DeviceOrderView extends Div {
 
 		cancel.addClickListener(e -> {															
 			clearForm();
+			deviceModel.setEnabled(false);
 //			refreshGrid();
 		});
 
 		createMail.addClickListener(e -> {
-//			try {
-//				this.currentDeviceOrder = new DeviceOrder();
-//				
-//				binder.writeBean(this.currentDeviceOrder);										//Werte aus FormularFeldern werden in Objekt geschrieben
-//				
-//				this.currentDeviceOrder = deviceOrderService.update(this.currentDeviceOrder);	//update(...) : Klasse wird in Datenbank neu erstellt oder aktualisiert
-//				clearForm();																	//Formular leeren
-//				
-				openMailControlDialog();
-//				
-//				Notification.show("New Device Order created.");
-//			} catch (ValidationException validationException) {
-//				Notification.show("An exception happened while trying to create a new Device Order.");
-//			}
+			try {
+				this.currentDeviceOrder = new DeviceOrder();
+				binder.writeBean(this.currentDeviceOrder);
+			} catch (ValidationException e1) {
+				Notification.show("An exception happened while trying to create a new Device Order.");
+			}
+			
+			openMailControlDialog();
 		});
 		
-		// add users to combobox user
-		producer.setItems("Apple", "Samsung");													//ComboBox Inhalt für Producer
-		deviceModel.setItems("One-way device", "multi-use device");								//ComboBox Inhalt für Device Model, muss sich automatisch aktualisieren bei Auswahl des Producers
+		// add producers to combobox producer
+		producer.setItems(ProducerDataService.getInstance().getAll());
+		deviceModel.setEnabled(false);
+		
+		producer.addValueChangeListener(event -> {
+			deviceModel.setItems(DeviceModelDataService.getInstance().getDeviceModelsOfProducer(producer.getValue()));								//ComboBox Inhalt für Device Model, muss sich automatisch aktualisieren bei Auswahl des Producers
+			deviceModel.setEnabled(true);
+		});
+		
+		
+//		deviceModel.addValueChangeListener(event -> {
+//			if (event.isFromClient() && event.getValue()!=null) {
+//	       		event.getValue().addDeviceOrder(this.currentDeviceOrder);
+//	        	DeviceModelDataService.getInstance().save(event.getValue());
+//	        	this.currentDeviceOrder.setDeviceModel(event.getValue());
+//	        	try {
+//					binder.writeBean(this.currentDeviceOrder);
+//				} catch (ValidationException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//	            	this.currentDeviceOrder = deviceOrderService.update(this.currentDeviceOrder);
+//	        }
+//		});
 		
 		createEditorLayout();
 	}
@@ -174,16 +194,18 @@ public class DeviceOrderView extends Div {
 		mailDiv.setSizeFull();
 		mailControlDialog.add(mailDiv);
 		
-		createMailLayout(mailDiv);
-		
 		Button sendMail = new Button("Send Mail");
 		Button cancelMail = new Button("Cancel");
 		
+		createMailLayout(mailDiv);
+		createButtonLayout(mailDiv, cancelMail, sendMail);
+		mailControlDialog.open();
+		
 		sendMail.addClickListener(e -> {
-			try {
-				this.currentDeviceOrder = new DeviceOrder();
-				
-				binder.writeBean(this.currentDeviceOrder);										//Werte aus FormularFeldern werden in Objekt geschrieben
+//			try {
+//				this.currentDeviceOrder = new DeviceOrder();
+								
+//				binder.writeBean(this.currentDeviceOrder);										//Werte aus FormularFeldern werden in Objekt geschrieben
 				
 				this.currentDeviceOrder = deviceOrderService.update(this.currentDeviceOrder);	//update(...) : Klasse wird in Datenbank neu erstellt oder aktualisiert
 				clearForm();																	//Formular leeren
@@ -191,18 +213,14 @@ public class DeviceOrderView extends Div {
 				mailControlDialog.close();
 				
 				Notification.show("New Device Order created.");
-			} catch (ValidationException validationException) {
-				Notification.show("An exception happened while trying to create a new Device Order.");
-			}
+//			} catch (ValidationException validationException) {
+//				Notification.show("An exception happened while trying to create a new Device Order.");
+//			}
 		});
 		
-		cancelMail.addClickListener(e -> {															
+		cancelMail.addClickListener(e -> {
 			mailControlDialog.close();
 		});
-		
-		createButtonLayout(mailDiv, cancelMail, sendMail);
-		
-		mailControlDialog.open();
 	}
 	
 	public void createMailLayout(Div wrapper) {
@@ -216,9 +234,9 @@ public class DeviceOrderView extends Div {
 		TextArea mailText = new TextArea();
 		
 		addMailItem(mailItemsLayout, from,  "From:", "devicemanagement@hellmann-logistics.com");
-		addMailItem(mailItemsLayout, to,  "To:", "");
-		addMailItem(mailItemsLayout, subject, "Subject:", "Device Order");
-		addMailItem(mailItemsLayout, mailText, "", "");
+		addMailItem(mailItemsLayout, to,  "To:", currentDeviceOrder.getProducer().getEmail());
+		addMailItem(mailItemsLayout, subject, "Subject:", "Device Order: " + currentDeviceOrder.getDeviceModel().getName());
+		addMailItem(mailItemsLayout, mailText, null , createMailText());
 		
 		mailItemsLayout.setResponsiveSteps(
 		        new ResponsiveStep("50em", 1));
@@ -231,5 +249,12 @@ public class DeviceOrderView extends Div {
 		
 		mailItemsLayout.addFormItem(field, fieldName);
 		field.getElement().getClassList().add("full-width");
+	}
+	
+	private String createMailText() {
+		return "Dear " + currentDeviceOrder.getProducer().getSalutation() + " " + currentDeviceOrder.getProducer().getLastName() + ", \n"
+				+ "Device: " + currentDeviceOrder.getDeviceModel().getName() + ", \n"
+				+ "Quantity: " + currentDeviceOrder.getQuantity() + ", \n"
+				+ "Delivery Date: "+ currentDeviceOrder.getDeliveryDate();
 	}
 }

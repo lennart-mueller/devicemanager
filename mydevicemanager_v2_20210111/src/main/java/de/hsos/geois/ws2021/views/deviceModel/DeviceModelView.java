@@ -21,7 +21,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 import de.hsos.geois.ws2021.data.entity.DeviceModel;
+import de.hsos.geois.ws2021.data.entity.Producer;
 import de.hsos.geois.ws2021.data.service.DeviceModelDataService;
+import de.hsos.geois.ws2021.data.service.ProducerDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "deviceModel", layout = MainView.class)
@@ -39,7 +41,7 @@ public class DeviceModelView extends Div {
     private BigDecimalField purchasePrice = new BigDecimalField();
     private BigDecimalField salesPrice = new BigDecimalField();
     
-//    private ComboBox<Customer> customer = new ComboBox<Customer>();
+    private ComboBox<Producer> producer = new ComboBox<Producer>();
 
 
     // TODO: Refactore these buttons in a separate (abstract) form class
@@ -98,29 +100,29 @@ public class DeviceModelView extends Div {
                 this.currentDeviceModel = deviceModelService.update(this.currentDeviceModel);
                 clearForm();
                 refreshGrid();
-                Notification.show("Device details stored.");
+                Notification.show("Device model details stored.");
             } catch (ValidationException validationException) {
-                Notification.show("An exception happened while trying to store the device details.");
+                Notification.show("An exception happened while trying to store the device model details.");
             }
         });
         
         // add users to combobox user
-//        customer.setItems(CustomerDataService.getInstance().getAll());
-//        
-//        customer.addValueChangeListener(event -> {
-//        	if (event.isFromClient() && event.getValue()!=null) {
-//        		event.getValue().addDevice(this.currentDeviceModel);
-//        		CustomerDataService.getInstance().save(event.getValue());
-//        		this.currentDeviceModel.setCustomer(event.getValue());
-//        		try {
-//					binder.writeBean(this.currentDeviceModel);
-//				} catch (ValidationException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//                this.currentDeviceModel = deviceModelService.update(this.currentDeviceModel);
-//        	}
-//        });
+        producer.setItems(ProducerDataService.getInstance().getAll());
+        
+        producer.addValueChangeListener(event -> {
+        	if (event.isFromClient() && event.getValue()!=null) {
+        		event.getValue().addDeviceModel(this.currentDeviceModel);
+        		ProducerDataService.getInstance().save(event.getValue());
+        		this.currentDeviceModel.setProducer(event.getValue());
+        		try {
+					binder.writeBean(this.currentDeviceModel);
+				} catch (ValidationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                this.currentDeviceModel = deviceModelService.update(this.currentDeviceModel);
+        	}
+        });
         
 
         SplitLayout splitLayout = new SplitLayout();
@@ -141,11 +143,11 @@ public class DeviceModelView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
+        addFormItem(editorDiv, formLayout, producer, "Producer");
         addFormItem(editorDiv, formLayout, name, "Device Model name");
         addFormItem(editorDiv, formLayout, artNr, "Article number");
         addFormItem(editorDiv, formLayout, purchasePrice, "Purchase price");
         addFormItem(editorDiv, formLayout, salesPrice, "Sales price");
-//        addFormItem(editorDiv, formLayout, customer, "Customer");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);

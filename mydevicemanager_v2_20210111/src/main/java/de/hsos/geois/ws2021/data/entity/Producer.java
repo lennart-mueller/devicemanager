@@ -28,11 +28,15 @@ public class Producer extends AbstractEntity {
 	private String email = "";
 	private String phone = "";
 	
-//	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = false)
-//	private Collection<Device> devices;
+	@OneToMany(mappedBy = "producer", cascade = CascadeType.ALL, orphanRemoval = false)
+	private Collection<DeviceModel> deviceModels;
+	
+	@OneToMany(mappedBy = "producer", cascade = CascadeType.ALL, orphanRemoval = false)
+	private Collection<DeviceOrder> deviceOrders;
 	
 	public Producer() {
-//		this.devices = new ArrayList<Device>();
+		this.deviceModels = new ArrayList<DeviceModel>();
+		this.deviceOrders = new ArrayList<DeviceOrder>();
 	}
 
 	public String getCompanyName() {
@@ -116,24 +120,40 @@ public class Producer extends AbstractEntity {
 		this.phone = phone;
 	}
 
-//	public Collection<Device> getDevices() {
-//		return devices;
-//	}
-//
-//	public void setDevices(Collection<Device> devices) {
-//		this.devices = devices;
-//	}
+	public Collection<DeviceModel> getDeviceModels() {
+		return deviceModels;
+	}
+
+	public void setDeviceModels(Collection<DeviceModel> deviceModels) {
+		this.deviceModels = deviceModels;
+	}
 	
-//	public boolean addDevice(Device device) {
-//		return getDevices().add(device);
-//	}
-//	
-//	public boolean removeDevice(Device device) {
-//		return getDevices().remove(device);
-//	}
+	public boolean addDeviceModel(DeviceModel deviceModel) {
+		return getDeviceModels().add(deviceModel);
+	}
+	
+	public boolean removeDeviceModel(DeviceModel deviceModel) {
+		return getDeviceModels().remove(deviceModel);
+	}
+	
+	public Collection<DeviceOrder> getDeviceOrders() {
+		return deviceOrders;
+	}
+
+	public void setDeviceOrders(Collection<DeviceOrder> deviceOrders) {
+		this.deviceOrders = deviceOrders;
+	}
+	
+	public boolean addDeviceOrder(DeviceOrder deviceOrder) {
+		return getDeviceOrders().add(deviceOrder);
+	}
+	
+	public boolean removeDeviceOrder(DeviceOrder deviceOrder) {
+		return getDeviceOrders().remove(deviceOrder);
+	}
 	
 	public String toString() {
-		return getLastName() + ", " + getFirstName();
+		return getCompanyName();
 	}
 	
 //	@Override

@@ -3,36 +3,42 @@ package de.hsos.geois.ws2021.data.entity;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
 @Entity
 public class DeviceOrder extends AbstractEntity {
-
-	private String producer;
-	private String deviceModel;
+	
 	private int quantity;
 	private LocalDate orderDate;
 	private LocalDate deliveryDate;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Producer producer;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private DeviceModel deviceModel;
 	
 	
 	public DeviceOrder() {
 		this.orderDate = LocalDate.now();
 	}
 
-	public String getProducer() {
+	public Producer getProducer() {
 		return producer;
 	}
 	
-	public void setProducer(String producer) {
+	public void setProducer(Producer producer) {
 		this.producer = producer;
 	}
 	
-	public String getDeviceModel() {
+	public DeviceModel getDeviceModel() {
 		return deviceModel;
 	}
 	
-	public void setDeviceModel(String deviceModel) {
+	public void setDeviceModel(DeviceModel deviceModel) {
 		this.deviceModel = deviceModel;
 	}
 	
