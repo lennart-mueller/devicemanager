@@ -31,12 +31,9 @@ public class Producer extends AbstractEntity {
 	@OneToMany(mappedBy = "producer", cascade = CascadeType.ALL, orphanRemoval = false)
 	private Collection<DeviceModel> deviceModels;
 	
-	@OneToMany(mappedBy = "producer", cascade = CascadeType.ALL, orphanRemoval = false)
-	private Collection<DeviceOrder> deviceOrders;
 	
 	public Producer() {
 		this.deviceModels = new ArrayList<DeviceModel>();
-		this.deviceOrders = new ArrayList<DeviceOrder>();
 	}
 
 	public String getCompanyName() {
@@ -134,22 +131,6 @@ public class Producer extends AbstractEntity {
 	
 	public boolean removeDeviceModel(DeviceModel deviceModel) {
 		return getDeviceModels().remove(deviceModel);
-	}
-	
-	public Collection<DeviceOrder> getDeviceOrders() {
-		return deviceOrders;
-	}
-
-	public void setDeviceOrders(Collection<DeviceOrder> deviceOrders) {
-		this.deviceOrders = deviceOrders;
-	}
-	
-	public boolean addDeviceOrder(DeviceOrder deviceOrder) {
-		return getDeviceOrders().add(deviceOrder);
-	}
-	
-	public boolean removeDeviceOrder(DeviceOrder deviceOrder) {
-		return getDeviceOrders().remove(deviceOrder);
 	}
 	
 	public String toString() {

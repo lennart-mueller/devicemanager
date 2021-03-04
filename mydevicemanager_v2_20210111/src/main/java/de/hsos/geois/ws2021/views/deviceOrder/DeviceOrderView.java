@@ -234,7 +234,8 @@ public class DeviceOrderView extends Div {
 		TextArea mailText = new TextArea();
 		
 		addMailItem(mailItemsLayout, from,  "From:", "devicemanagement@hellmann-logistics.com");
-		addMailItem(mailItemsLayout, to,  "To:", currentDeviceOrder.getProducer().getEmail());
+//		addMailItem(mailItemsLayout, to,  "To:", currentDeviceOrder.getProducer().getEmail());
+		addMailItem(mailItemsLayout, to,  "To:", currentDeviceOrder.getDeviceModel().getProducer().getEmail());
 		addMailItem(mailItemsLayout, subject, "Subject:", "Device Order: " + currentDeviceOrder.getDeviceModel().getName());
 		addMailItem(mailItemsLayout, mailText, null , createMailText());
 		
@@ -252,7 +253,9 @@ public class DeviceOrderView extends Div {
 	}
 	
 	private String createMailText() {
-		return "Dear " + currentDeviceOrder.getProducer().getSalutation() + " " + currentDeviceOrder.getProducer().getLastName() + ", \n"
+		return "Dear "
+				+ currentDeviceOrder.getDeviceModel().getProducer().getSalutation() 
+				+ " " + currentDeviceOrder.getDeviceModel().getProducer().getLastName() + ", \n"
 				+ "Device: " + currentDeviceOrder.getDeviceModel().getName() + ", \n"
 				+ "Quantity: " + currentDeviceOrder.getQuantity() + ", \n"
 				+ "Delivery Date: "+ currentDeviceOrder.getDeliveryDate();

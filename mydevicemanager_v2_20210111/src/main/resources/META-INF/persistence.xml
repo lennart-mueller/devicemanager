@@ -4,7 +4,7 @@
 	  version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
 	  <persistence-unit name="geois" transaction-type="RESOURCE_LOCAL">
 	  	<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-	  	<class>de.hsos.geois.ws2021.data.entity.User</class>
+		<class>de.hsos.geois.ws2021.data.entity.User</class>
 	  	<class>de.hsos.geois.ws2021.data.entity.Customer</class>
 	  	<class>de.hsos.geois.ws2021.data.entity.Device</class>
 	  	<class>de.hsos.geois.ws2021.data.entity.DeviceOrder</class>
@@ -12,7 +12,7 @@
 	  	<class>de.hsos.geois.ws2021.data.entity.DeviceModel</class>
 	    <properties>
 	      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-	      <property name="javax.persistence.jdbc.url" value="jdbc:h2:~/Desktop/Geo-IS/Vaadin/test" />
+	      <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/E:/Hochschule/geoinformatik/db" />
 	      <property name="javax.persistence.jdbc.user" value="sa" />
 	      <property name="javax.persistence.jdbc.password" value="" /> 
 	      <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
@@ -20,5 +20,7 @@
 	    </properties>
 	  </persistence-unit>
 	</persistence>
+
+
 
 

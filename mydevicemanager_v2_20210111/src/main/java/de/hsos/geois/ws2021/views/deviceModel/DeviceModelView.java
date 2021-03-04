@@ -59,7 +59,7 @@ public class DeviceModelView extends Div {
         this.deviceModelService = DeviceModelDataService.getInstance();
         // Configure Grid
         grid = new Grid<>(DeviceModel.class);
-        grid.setColumns("name", "artNr", "purchasePrice", "salesPrice");
+        grid.setColumns("producer","name", "artNr", "purchasePrice", "salesPrice");
         grid.setDataProvider(new DeviceModelDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();

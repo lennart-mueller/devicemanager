@@ -14,9 +14,6 @@ public class DeviceOrder extends AbstractEntity {
 	private int quantity;
 	private LocalDate orderDate;
 	private LocalDate deliveryDate;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Producer producer;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DeviceModel deviceModel;
@@ -24,14 +21,6 @@ public class DeviceOrder extends AbstractEntity {
 	
 	public DeviceOrder() {
 		this.orderDate = LocalDate.now();
-	}
-
-	public Producer getProducer() {
-		return producer;
-	}
-	
-	public void setProducer(Producer producer) {
-		this.producer = producer;
 	}
 	
 	public DeviceModel getDeviceModel() {

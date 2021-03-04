@@ -24,6 +24,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 import de.hsos.geois.ws2021.data.entity.Device;
+import de.hsos.geois.ws2021.data.entity.DeviceModel;
 import de.hsos.geois.ws2021.data.entity.Customer;
 import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.data.service.CustomerDataService;
@@ -152,31 +153,31 @@ public class CustomerView extends Div {
         addFormItem(editorDiv, formLayout, place, "Place");
         
         // add grid
-        deviceGrid.addColumn(Device::getArtNr).setHeader("ArtNr");
-        deviceGrid.addColumn(Device::getName).setHeader("Name");
-        deviceGrid.addColumn(Device::getSerialNr).setHeader("SerialNr");
-        deviceGrid.addColumn(Device::getSalesPrice).setHeader("SalesPrice");
-        deviceGrid.addColumn(
-        	    new NativeButtonRenderer<>("Remove Device",
-        	       clickedDevice -> {
-        	           this.customer.removeDevice(clickedDevice);
-        	           clickedDevice.setCustomer(null);
-					   // persist customer
-        	           try {
-							binder.writeBean(this.customer);
-							this.customer = customerService.update(this.customer);
-						} catch (ValidationException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					   // persist clickedDevice
-        	           DeviceDataService.getInstance().save(clickedDevice);
-        	           populateForm(this.customer);
-        	    })
-        	);
-        deviceGrid.setWidthFull();
-        
-        formLayout.add(deviceGrid);
+//        deviceGrid.addColumn(Device::getArtNr).setHeader("ArtNr");
+//        deviceGrid.addColumn(Device::getName).setHeader("Name");
+//        deviceGrid.addColumn(Device::getSerialNr).setHeader("SerialNr");
+//        deviceGrid.addColumn(Device::getSalesPrice).setHeader("SalesPrice");
+//        deviceGrid.addColumn(
+//        	    new NativeButtonRenderer<>("Remove Device",
+//        	       clickedDevice -> {
+//        	           this.customer.removeDevice(clickedDevice);
+//        	           clickedDevice.setCustomer(null);
+//					   // persist customer
+//        	           try {
+//							binder.writeBean(this.customer);
+//							this.customer = customerService.update(this.customer);
+//						} catch (ValidationException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					   // persist clickedDevice
+//        	           DeviceDataService.getInstance().save(clickedDevice);
+//        	           populateForm(this.customer);
+//        	    })
+//        	);
+//        deviceGrid.setWidthFull();
+//        
+//        formLayout.add(deviceGrid);
         
         createButtonLayout(editorLayoutDiv);
 

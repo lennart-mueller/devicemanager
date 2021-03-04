@@ -24,6 +24,9 @@ public class DeviceModel extends AbstractEntity {
 	@OneToMany(mappedBy = "deviceModel", cascade = CascadeType.ALL, orphanRemoval = false)
 	private Collection<DeviceOrder> deviceOrders;
 	
+	@OneToMany(mappedBy = "deviceModel", cascade = CascadeType.ALL, orphanRemoval = false)
+	private Collection<Device> devices;
+	
 	@Column(unique=true)
 	private String artNr;
 	
@@ -33,6 +36,7 @@ public class DeviceModel extends AbstractEntity {
 	
 	public DeviceModel() {
 		this.deviceOrders = new ArrayList<DeviceOrder>();
+		this.devices = new ArrayList<Device>();
 	}
 	
 	public String getName() {
@@ -83,6 +87,14 @@ public class DeviceModel extends AbstractEntity {
 		this.deviceOrders = deviceOrders;
 	}
 	
+	public Collection<Device> getDevices() {
+		return devices;
+	}
+
+	public void setDevices(Collection<Device> devices) {
+		this.devices = devices;
+	}
+
 	public boolean addDeviceOrder(DeviceOrder deviceOrder) {
 		return getDeviceOrders().add(deviceOrder);
 	}
@@ -91,10 +103,24 @@ public class DeviceModel extends AbstractEntity {
 		return getDeviceOrders().remove(deviceOrder);
 	}
 	
-	public String toString() {
-		return getName();
-	}	
+	public boolean addDevice(Device device) {
+		return getDevices().add(device);
+	}
 	
+	public boolean removeDevice(Device device) {
+		return getDevices().remove(device);
+	}
+	
+	
+	//TODO: Mehrere ToString Methoden anlegen 1x für Device Order 1x für Devices
+//	public String toString() {
+//		return getProducer() + " " + getName() + " " + getArtNr() + " " + getPurchasePrice() + " " + getSalesPrice();
+//	}	
+	
+	public String toString() {
+		return "["+getProducer()+"] "+ getName();
+	}	
+//	
 //	@Override
 //    public boolean equals(Object o) {
 //        if (this == o) return true;

@@ -21,8 +21,6 @@ public class DeviceDataService extends DataService<Device> {
 	private static DeviceDataService INSTANCE;
     
     public static final String SORT_ON_ID = "d.id";
-	public static final String SORT_ON_NAME = "d.name";
-	public static final String SORT_ON_ARTNR = "d.artNr";
 	public static final String SORT_ON_SERIALNR = "d.serialNr";
 	
 	private DeviceDataService() {
@@ -51,7 +49,7 @@ public class DeviceDataService extends DataService<Device> {
 
 	@Override
 	protected String getAllQuery() {
-		return "SELECT d FROM Device d ORDER BY d.name";
+		return "SELECT d FROM Device d ORDER BY d.serialNr";
 	}
 
 	@Override
@@ -61,8 +59,6 @@ public class DeviceDataService extends DataService<Device> {
 	
 	public int countDevices(String filter) {
 		String queryString = "SELECT count(d) FROM Device d WHERE (CONCAT(d.id, '') LIKE :filter "
-				+ "OR LOWER(d.name) LIKE :filter "
-				+ "OR LOWER(d.artNr) LIKE :filter "
 				+ "OR LOWER(d.serialNr) LIKE :filter)";
 		return super.count(queryString, filter);
 	}
@@ -74,14 +70,12 @@ public class DeviceDataService extends DataService<Device> {
 		// By default sort on name
 		if (sortOrders == null || sortOrders.isEmpty()) {
 			sortOrders = new ArrayList<>();
-		    sortOrders.add(new QuerySortOrder(SORT_ON_NAME, SortDirection.ASCENDING));
+		    sortOrders.add(new QuerySortOrder(SORT_ON_SERIALNR, SortDirection.ASCENDING));
 		}
 		
 		String sortString = getSortingString(sortOrders);
 		
 		String queryString = "SELECT d FROM Device d WHERE (CONCAT(d.id, '') LIKE :filter "
-				+ "OR LOWER(d.name) LIKE :filter "
-				+ "OR LOWER(d.artNr) LIKE :filter "
 				+ "OR LOWER(d.serialNr) LIKE :filter)" + sortString;
 		
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, Device.class)
@@ -92,7 +86,7 @@ public class DeviceDataService extends DataService<Device> {
 	}
 
 	public Collection<Device> getDevicesOfCustomer(Customer customer) {
-		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT d FROM Device d WHERE d.customer = :customer ORDER BY d.name", Device.class)
+		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT d FROM Device d WHERE d.customer = :customer ORDER BY d.serialNr", Device.class)
 				.setParameter("customer", customer)
 				.getResultList());
 	}
