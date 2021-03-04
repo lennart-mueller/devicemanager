@@ -26,6 +26,7 @@ import de.hsos.geois.ws2021.views.MainView;
 import de.hsos.geois.ws2021.views.about.AboutView;
 import de.hsos.geois.ws2021.views.customer.CustomerView;
 import de.hsos.geois.ws2021.views.device.DeviceView;
+import de.hsos.geois.ws2021.views.deviceModel.DeviceModelView;
 import de.hsos.geois.ws2021.views.deviceOrder.DeviceOrderView;
 import de.hsos.geois.ws2021.views.producer.ProducerView;
 
@@ -93,6 +94,7 @@ public class MainView extends AppLayout {
             createTab("Devices", DeviceView.class),
             createTab("Device Order", DeviceOrderView.class),
             createTab("Producer", ProducerView.class),
+            createTab("Device Model", DeviceModelView.class),
             createTab("About", AboutView.class)
         };
     }
