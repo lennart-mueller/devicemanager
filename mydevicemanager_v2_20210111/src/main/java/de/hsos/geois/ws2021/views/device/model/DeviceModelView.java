@@ -1,4 +1,4 @@
-package de.hsos.geois.ws2021.views.deviceModel;
+package de.hsos.geois.ws2021.views.device.model;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;

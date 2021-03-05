@@ -1,4 +1,4 @@
-package de.hsos.geois.ws2021.views.deviceOrder;
+package de.hsos.geois.ws2021.views.device.order;
 
 import java.util.stream.Stream;
 
