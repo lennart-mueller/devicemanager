@@ -1,7 +1,5 @@
 package de.hsos.geois.ws2021.data.entity;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,7 +18,16 @@ public class Device extends AbstractEntity {
 	
 	@Column(unique=true)
 	private String serialNr;
+	
+	private boolean isDelivered;
 
+	public boolean isDelivered() {
+		return isDelivered;
+	}
+
+	public void setDelivered(boolean isDelivered) {
+		this.isDelivered = isDelivered;
+	}
 
 	public String getSerialNr() {
 		return serialNr;

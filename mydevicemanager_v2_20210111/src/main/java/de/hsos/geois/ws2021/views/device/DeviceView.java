@@ -11,6 +11,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -43,6 +44,7 @@ public class DeviceView extends Div {
     private TextField serialNr = new TextField();
     private BigDecimalField purchasePrice = new BigDecimalField();
     private BigDecimalField salesPrice = new BigDecimalField();
+    private Select<String> deliveryStatus = new Select<>();
     
     private ComboBox<Customer> customer = new ComboBox<Customer>();
     private ComboBox<DeviceModel> deviceModels = new ComboBox<DeviceModel>();
@@ -146,6 +148,8 @@ public class DeviceView extends Div {
         	}
         });
         
+        deliveryStatus.setItems("true", "false");
+        deliveryStatus.setPlaceholder("deliveryStatus");
 
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
