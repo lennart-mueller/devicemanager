@@ -281,11 +281,13 @@ public class DeviceOrderView extends Div {
 	}
 	
 	private String createMailText() {
-		return "Dear "
-				+ currentDeviceOrder.getDeviceModel().getProducer().getSalutation() 
-				+ " " + currentDeviceOrder.getDeviceModel().getProducer().getLastName() + ", \n"
-				+ "Device: " + currentDeviceOrder.getDeviceModel().getName() + ", \n"
-				+ "Quantity: " + currentDeviceOrder.getQuantity() + ", \n"
-				+ "Delivery Date: "+ currentDeviceOrder.getDeliveryDate();
+		return "Dear " + currentDeviceOrder.getDeviceModel().getProducer().getSalutation() + " " + currentDeviceOrder.getDeviceModel().getProducer().getLastName() + ",\n"
+				+ "I am writing to purchase devices from the device model " + currentDeviceOrder.getDeviceModel().getName() + ".\n"
+				+ "We would like to order " + currentDeviceOrder.getQuantity() + " devices each " + currentDeviceOrder.getDeviceModel().getPurchasePrice() + "  euros as purchase price. \n"
+				+ "It will be grateful if you accept our prefering delivery date of the " + currentDeviceOrder.getDeliveryDate() + ". \n" 
+				+ "Should you need any further information, please do not hesitate to contact us.\n"
+				+ "I look forward to hearing from you.\n"
+				+ "Yours sincerely,\n"
+				+ "Devicemanagement - Hellmann Logistics";
 	}
 }
