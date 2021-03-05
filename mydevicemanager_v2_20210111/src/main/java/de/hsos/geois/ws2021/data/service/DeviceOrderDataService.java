@@ -22,7 +22,6 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 	private static DeviceOrderDataService INSTANCE;
     
     public static final String SORT_ON_ID = "do.id";
-	public static final String SORT_ON_PRODUCER = "do.producer";
 	public static final String SORT_ON_DEVICEMODEL = "do.deviceModel";
 	public static final String SORT_ON_QUANTITY = "do.quantity";
 	public static final String SORT_ON_ORDERDATE = "do.orderDate";
@@ -54,7 +53,7 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 
 	@Override
 	protected String getAllQuery() {
-		return "SELECT do FROM DeviceOrder do ORDER BY d.orderDate";
+		return "SELECT do FROM DeviceOrder do ORDER BY do.orderDate";
 	}
 
 	@Override
@@ -64,8 +63,6 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 	
 	public int countDeviceOrders(String filter) {
 		String queryString = "SELECT count(do) FROM DeviceOrder do WHERE (CONCAT(do.id, '') LIKE :filter "
-				+ "OR LOWER(do.producer) LIKE :filter "
-				+ "OR LOWER(do.deviceModel) LIKE :filter "
 				+ "OR LOWER(do.orderDate) LIKE :filter)";
 		return super.count(queryString, filter);
 	}
@@ -83,8 +80,6 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 		String sortString = getSortingString(sortOrders);
 		
 		String queryString = "SELECT do FROM DeviceOrder do WHERE (CONCAT(do.id, '') LIKE :filter "
-				+ "OR LOWER(do.producer) LIKE :filter "
-				+ "OR LOWER(do.deviceModel) LIKE :filter "
 				+ "OR LOWER(do.orderDate) LIKE :filter)" + sortString;
 		
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, DeviceOrder.class)

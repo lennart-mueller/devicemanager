@@ -52,6 +52,7 @@ public class DeviceView extends Div {
     private Button save = new Button("Save");
 
     private Binder<Device> binder;
+    
 
     private Device currentDevice = new Device();
 
@@ -124,6 +125,7 @@ public class DeviceView extends Div {
 					e1.printStackTrace();
 				}
                 this.currentDevice = deviceService.update(this.currentDevice);
+
         	}
         });
         

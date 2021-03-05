@@ -1,4 +1,4 @@
-package de.hsos.geois.ws2021.views.deviceOrder;
+package de.hsos.geois.ws2021.views.device.order;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -14,15 +14,18 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -37,6 +40,7 @@ import de.hsos.geois.ws2021.data.service.DeviceModelDataService;
 import de.hsos.geois.ws2021.data.service.DeviceOrderDataService;
 import de.hsos.geois.ws2021.data.service.ProducerDataService;
 import de.hsos.geois.ws2021.views.MainView;
+import de.hsos.geois.ws2021.views.device.model.DeviceModelDataProvider;
 
 @Route(value = "device-order", layout = MainView.class)
 @PageTitle("MyDeviceManager")
@@ -46,10 +50,10 @@ public class DeviceOrderView extends Div {
 
 	private static final long serialVersionUID = 4939100739729795870L;
 
-//	private Grid<Device> grid;
+	private Grid<DeviceOrder> grid;
 	
-	private ComboBox<Producer> producer = new ComboBox<>();
-	private ComboBox<DeviceModel> deviceModel = new ComboBox<>();
+	private ComboBox<Producer> producer = new ComboBox<Producer>();
+	private ComboBox<DeviceModel> deviceModel = new ComboBox<DeviceModel>();
 	private IntegerField quantity = new IntegerField();
 	private DatePicker deliveryDate = new DatePicker();
 
@@ -66,7 +70,25 @@ public class DeviceOrderView extends Div {
 	public DeviceOrderView() {
 		setId("my-device-manager-view");
 		this.deviceOrderService = DeviceOrderDataService.getInstance();
+		
+		
+		
+		 // Configure Grid
+        grid = new Grid<>(DeviceOrder.class);
+        grid.setColumns("deviceModel","quantity", "orderDate", "deliveryDate");
+        grid.setDataProvider(new DeviceOrderDataProvider());
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.setHeightFull();
+        
+        // when a row is selected or deselected, populate form
+        grid.asSingleSelect().addValueChangeListener(event -> {
+          producer.setEnabled(false);
+          deviceModel.setEnabled(false);
+          quantity.setEnabled(false);
+          deliveryDate.setEnabled(false);
+        });
 
+        
 		// Configure Form
 		binder = new Binder<>(DeviceOrder.class);
 
@@ -115,10 +137,16 @@ public class DeviceOrderView extends Div {
 //	        }
 //		});
 		
-		createEditorLayout();
+        SplitLayout splitLayout = new SplitLayout();
+        splitLayout.setSizeFull();
+
+        createGridLayout(splitLayout);
+        createEditorLayout(splitLayout);
+
+        add(splitLayout);
 	}
 
-	private void createEditorLayout() {
+	private void createEditorLayout(SplitLayout splitLayout) {
 		Div editorLayoutDiv = new Div();
 		editorLayoutDiv.setId("editor-layout");
 
@@ -143,7 +171,7 @@ public class DeviceOrderView extends Div {
 		
 		createButtonLayout(editorLayoutDiv, cancel, createMail);
 		
-		add(editorLayoutDiv);
+		splitLayout.addToSecondary(editorLayoutDiv);
 	}
 
 	private void createButtonLayout(Div editorLayoutDiv, Button cancel, Button accept) {
@@ -157,13 +185,13 @@ public class DeviceOrderView extends Div {
 		editorLayoutDiv.add(buttonLayout);
 	}
 
-//	private void createGridLayout(SplitLayout splitLayout) {
-//		Div wrapper = new Div();
-//		wrapper.setId("grid-wrapper");
-//		wrapper.setWidthFull();
-//		splitLayout.addToPrimary(wrapper);
-//		wrapper.add(grid);
-//	}
+	private void createGridLayout(SplitLayout splitLayout) {
+		Div wrapper = new Div();
+		wrapper.setId("grid-wrapper");
+		wrapper.setWidthFull();
+		splitLayout.addToPrimary(wrapper);
+		wrapper.add(grid);
+	}
 
 	private void addFormItem(Div wrapper, FormLayout formLayout, AbstractField field, String fieldName) {
 		formLayout.addFormItem(field, fieldName);
@@ -171,10 +199,10 @@ public class DeviceOrderView extends Div {
 		field.getElement().getClassList().add("full-width");
 	}
 
-//	private void refreshGrid() {
-//		grid.select(null);
-//		grid.getDataProvider().refreshAll();
-//	}
+	private void refreshGrid() {
+		grid.select(null);
+		grid.getDataProvider().refreshAll();
+	}
 
 	private void clearForm() {
 		populateForm(null);

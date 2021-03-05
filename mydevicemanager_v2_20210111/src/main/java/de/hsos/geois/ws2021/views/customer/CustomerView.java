@@ -153,31 +153,29 @@ public class CustomerView extends Div {
         addFormItem(editorDiv, formLayout, place, "Place");
         
         // add grid
-//        deviceGrid.addColumn(Device::getArtNr).setHeader("ArtNr");
-//        deviceGrid.addColumn(Device::getName).setHeader("Name");
-//        deviceGrid.addColumn(Device::getSerialNr).setHeader("SerialNr");
-//        deviceGrid.addColumn(Device::getSalesPrice).setHeader("SalesPrice");
-//        deviceGrid.addColumn(
-//        	    new NativeButtonRenderer<>("Remove Device",
-//        	       clickedDevice -> {
-//        	           this.customer.removeDevice(clickedDevice);
-//        	           clickedDevice.setCustomer(null);
-//					   // persist customer
-//        	           try {
-//							binder.writeBean(this.customer);
-//							this.customer = customerService.update(this.customer);
-//						} catch (ValidationException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					   // persist clickedDevice
-//        	           DeviceDataService.getInstance().save(clickedDevice);
-//        	           populateForm(this.customer);
-//        	    })
-//        	);
-//        deviceGrid.setWidthFull();
-//        
-//        formLayout.add(deviceGrid);
+        deviceGrid.addColumn(Device::getDeviceModel).setHeader("DeviceModel");
+        deviceGrid.addColumn(Device::getSerialNr).setHeader("SerialNr");
+        deviceGrid.addColumn(
+        	    new NativeButtonRenderer<>("Remove Device",
+        	       clickedDevice -> {
+        	           this.customer.removeDevice(clickedDevice);
+        	           clickedDevice.setCustomer(null);
+					   // persist customer
+        	           try {
+							binder.writeBean(this.customer);
+							this.customer = customerService.update(this.customer);
+						} catch (ValidationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					   // persist clickedDevice
+        	           DeviceDataService.getInstance().save(clickedDevice);
+        	           populateForm(this.customer);
+        	    })
+        	);
+        deviceGrid.setWidthFull();
+        
+        formLayout.add(deviceGrid);
         
         createButtonLayout(editorLayoutDiv);
 
