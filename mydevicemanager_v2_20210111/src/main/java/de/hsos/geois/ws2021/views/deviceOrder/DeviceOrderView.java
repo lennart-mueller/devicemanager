@@ -98,23 +98,7 @@ public class DeviceOrderView extends Div {
 			deviceModel.setItems(DeviceModelDataService.getInstance().getDeviceModelsOfProducer(producer.getValue()));								//ComboBox Inhalt für Device Model, muss sich automatisch aktualisieren bei Auswahl des Producers
 			deviceModel.setEnabled(true);
 		});
-		
-		
-//		deviceModel.addValueChangeListener(event -> {
-//			if (event.isFromClient() && event.getValue()!=null) {
-//	       		event.getValue().addDeviceOrder(this.currentDeviceOrder);
-//	        	DeviceModelDataService.getInstance().save(event.getValue());
-//	        	this.currentDeviceOrder.setDeviceModel(event.getValue());
-//	        	try {
-//					binder.writeBean(this.currentDeviceOrder);
-//				} catch (ValidationException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//	            	this.currentDeviceOrder = deviceOrderService.update(this.currentDeviceOrder);
-//	        }
-//		});
-		
+				
 		createEditorLayout();
 	}
 
@@ -202,20 +186,12 @@ public class DeviceOrderView extends Div {
 		mailControlDialog.open();
 		
 		sendMail.addClickListener(e -> {
-//			try {
-//				this.currentDeviceOrder = new DeviceOrder();
-								
-//				binder.writeBean(this.currentDeviceOrder);										//Werte aus FormularFeldern werden in Objekt geschrieben
-				
-				this.currentDeviceOrder = deviceOrderService.update(this.currentDeviceOrder);	//update(...) : Klasse wird in Datenbank neu erstellt oder aktualisiert
-				clearForm();																	//Formular leeren
-				
-				mailControlDialog.close();
-				
-				Notification.show("New Device Order created.");
-//			} catch (ValidationException validationException) {
-//				Notification.show("An exception happened while trying to create a new Device Order.");
-//			}
+			this.currentDeviceOrder = deviceOrderService.update(this.currentDeviceOrder);	//update(...) : Klasse wird in Datenbank neu erstellt oder aktualisiert
+			clearForm();																	//Formular leeren
+			
+			mailControlDialog.close();
+			
+			Notification.show("New Device Order created.");
 		});
 		
 		cancelMail.addClickListener(e -> {
@@ -238,8 +214,31 @@ public class DeviceOrderView extends Div {
 		addMailItem(mailItemsLayout, subject, "Subject:", "Device Order: " + currentDeviceOrder.getDeviceModel().getName());
 		addMailItem(mailItemsLayout, mailText, null , createMailText());
 		
+		Button editMailText = new Button("Edit Text");
+		Button saveMailText = new Button("Save Text");
+		saveMailText.setVisible(false);
+		
+		
+		
 		mailItemsLayout.setResponsiveSteps(
 		        new ResponsiveStep("50em", 1));
+		
+		Div editMailTextDiv = new Div();
+		createButtonLayout(editMailTextDiv, editMailText, saveMailText);
+		mailItemsLayout.add(editMailTextDiv);
+		
+		editMailText.addClickListener(e -> {
+			saveMailText.setVisible(true);
+			editMailText.setVisible(false);
+			mailText.setReadOnly(false);
+		});
+		
+		saveMailText.addClickListener(e -> {
+			saveMailText.setVisible(false);
+			editMailText.setVisible(true);
+			mailText.setReadOnly(true);
+		});
+		
 		wrapper.add(mailItemsLayout);
 	}
 	
@@ -252,9 +251,13 @@ public class DeviceOrderView extends Div {
 	}
 	
 	private String createMailText() {
-		return "Dear " + currentDeviceOrder.getProducer().getSalutation() + " " + currentDeviceOrder.getProducer().getLastName() + ", \n"
-				+ "Device: " + currentDeviceOrder.getDeviceModel().getName() + ", \n"
-				+ "Quantity: " + currentDeviceOrder.getQuantity() + ", \n"
-				+ "Delivery Date: "+ currentDeviceOrder.getDeliveryDate();
+		return "Dear " + currentDeviceOrder.getProducer().getSalutation() + " " + currentDeviceOrder.getProducer().getLastName() + ",\n"
+				+ "I am writing to purchase devices from the device model " + currentDeviceOrder.getDeviceModel().getName() + ".\n"
+				+ "We would like to order " + currentDeviceOrder.getQuantity() + " devices each " + currentDeviceOrder.getDeviceModel().getPurchasePrice() + "  euros as purchase price. \n"
+				+ "It will be grateful if you accept our prefering delivery date of the " + currentDeviceOrder.getDeliveryDate() + ". \n" 
+				+ "Should you need any further information, please do not hesitate to contact us.\n"
+				+ "I look forward to hearing from you.\n"
+				+ "Yours sincerely,\n"
+				+ "Devicemanagement - Hellmann Logistics";
 	}
 }
