@@ -8,8 +8,8 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,16 +19,14 @@ import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.theme.Theme;
 
-import de.hsos.geois.ws2021.views.user.UserView;
-import de.hsos.geois.ws2021.views.MainView;
 import de.hsos.geois.ws2021.views.about.AboutView;
 import de.hsos.geois.ws2021.views.customer.CustomerView;
 import de.hsos.geois.ws2021.views.device.DeviceView;
 import de.hsos.geois.ws2021.views.device.model.DeviceModelView;
 import de.hsos.geois.ws2021.views.device.order.DeviceOrderView;
 import de.hsos.geois.ws2021.views.producer.ProducerView;
+import de.hsos.geois.ws2021.views.user.UserView;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -91,10 +89,10 @@ public class MainView extends AppLayout {
         return new Tab[] {
             createTab("Users", UserView.class),
             createTab("Customers", CustomerView.class),
-            createTab("Devices", DeviceView.class),
-            createTab("Device Order", DeviceOrderView.class),
             createTab("Producer", ProducerView.class),
+            createTab("Devices", DeviceView.class),
             createTab("Device Model", DeviceModelView.class),
+            createTab("Device Order", DeviceOrderView.class),
             createTab("About", AboutView.class)
         };
     }
@@ -105,6 +103,7 @@ public class MainView extends AppLayout {
         ComponentUtil.setData(tab, Class.class, navigationTarget);
         return tab;
     }
+    
 
     @Override
     protected void afterNavigation() {

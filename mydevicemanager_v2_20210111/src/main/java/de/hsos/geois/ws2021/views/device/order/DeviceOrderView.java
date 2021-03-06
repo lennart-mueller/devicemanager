@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -18,29 +17,23 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
-import de.hsos.geois.ws2021.data.entity.Customer;
-import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.DeviceModel;
 import de.hsos.geois.ws2021.data.entity.DeviceOrder;
 import de.hsos.geois.ws2021.data.entity.Producer;
-import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.data.service.DeviceModelDataService;
 import de.hsos.geois.ws2021.data.service.DeviceOrderDataService;
 import de.hsos.geois.ws2021.data.service.ProducerDataService;
 import de.hsos.geois.ws2021.views.MainView;
-import de.hsos.geois.ws2021.views.device.model.DeviceModelDataProvider;
 
 @Route(value = "device-order", layout = MainView.class)
 @PageTitle("MyDeviceManager")
@@ -193,12 +186,14 @@ public class DeviceOrderView extends Div {
 		wrapper.add(grid);
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void addFormItem(Div wrapper, FormLayout formLayout, AbstractField field, String fieldName) {
 		formLayout.addFormItem(field, fieldName);
 		wrapper.add(formLayout);
 		field.getElement().getClassList().add("full-width");
 	}
 
+	@SuppressWarnings("unused")
 	private void refreshGrid() {
 		grid.select(null);
 		grid.getDataProvider().refreshAll();
@@ -272,6 +267,7 @@ public class DeviceOrderView extends Div {
 		wrapper.add(mailItemsLayout);
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addMailItem(FormLayout mailItemsLayout, AbstractField field, String fieldName, String fieldValue) {
 		field.setValue(fieldValue);
 		field.setReadOnly(true);

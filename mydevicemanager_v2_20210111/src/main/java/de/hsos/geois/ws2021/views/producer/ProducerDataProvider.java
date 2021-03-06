@@ -4,11 +4,9 @@ import java.util.stream.Stream;
 
 import com.vaadin.flow.data.provider.Query;
 
-import de.hsos.geois.ws2021.data.entity.Customer;
 import de.hsos.geois.ws2021.data.entity.Producer;
 import de.hsos.geois.ws2021.data.service.DataService;
 import de.hsos.geois.ws2021.data.service.ProducerDataService;
-import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.views.AbstractDataProvider;
 
 public class ProducerDataProvider extends AbstractDataProvider<Producer> {

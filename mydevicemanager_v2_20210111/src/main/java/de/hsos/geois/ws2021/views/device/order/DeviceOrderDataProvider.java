@@ -4,10 +4,8 @@ import java.util.stream.Stream;
 
 import com.vaadin.flow.data.provider.Query;
 
-import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.DeviceOrder;
 import de.hsos.geois.ws2021.data.service.DataService;
-import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.data.service.DeviceOrderDataService;
 import de.hsos.geois.ws2021.views.AbstractDataProvider;
 

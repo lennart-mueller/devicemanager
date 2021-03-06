@@ -38,7 +38,7 @@ public class DeviceModel extends AbstractEntity {
 		this.deviceOrders = new ArrayList<DeviceOrder>();
 		this.devices = new ArrayList<Device>();
 	}
-	
+
 	public String getName() {
 		return name;
 	}

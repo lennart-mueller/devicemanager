@@ -200,7 +200,8 @@ public class ProducerView extends Div {
         wrapper.add(grid);
     }
 
-    private void addFormItem(Div wrapper, FormLayout formLayout, AbstractField field, String fieldName) {
+    @SuppressWarnings("rawtypes")
+	private void addFormItem(Div wrapper, FormLayout formLayout, AbstractField field, String fieldName) {
         formLayout.addFormItem(field, fieldName);
         wrapper.add(formLayout);
         field.getElement().getClassList().add("full-width");
