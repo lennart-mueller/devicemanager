@@ -1,4 +1,4 @@
-package de.hsos.geois.ws2021.views.deviceModel;
+package de.hsos.geois.ws2021.views.device.model;
 
 import java.util.stream.Stream;
 
