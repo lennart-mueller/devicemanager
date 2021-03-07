@@ -75,7 +75,7 @@ public class DeviceView extends Div {
             	Device deviceFromBackend = event.getValue();
                 // when a row is selected but the data is no longer available, refresh grid
                 if (deviceFromBackend != null) {
-                    populateForm(deviceFromBackend	);
+                    populateForm(deviceFromBackend);
                 } else {
                     refreshGrid();
                 }

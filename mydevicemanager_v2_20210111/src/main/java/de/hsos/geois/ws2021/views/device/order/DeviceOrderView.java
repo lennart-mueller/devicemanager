@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -19,7 +18,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -30,17 +28,13 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
-import de.hsos.geois.ws2021.data.entity.Customer;
-import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.DeviceModel;
 import de.hsos.geois.ws2021.data.entity.DeviceOrder;
 import de.hsos.geois.ws2021.data.entity.Producer;
-import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.data.service.DeviceModelDataService;
 import de.hsos.geois.ws2021.data.service.DeviceOrderDataService;
 import de.hsos.geois.ws2021.data.service.ProducerDataService;
 import de.hsos.geois.ws2021.views.MainView;
-import de.hsos.geois.ws2021.views.device.model.DeviceModelDataProvider;
 
 @Route(value = "device-order", layout = MainView.class)
 @PageTitle("MyDeviceManager")
@@ -60,6 +54,11 @@ public class DeviceOrderView extends Div {
 	// TODO: Refactore these buttons in a separate (abstract) form class
 	private Button cancel = new Button("Cancel");
 	private Button createMail = new Button("Create Mail");
+	
+	private Button orderDetails = new Button("Order Details");
+	private Button newOrder = new Button("New Order");
+	
+	
 
 	private Binder<DeviceOrder> binder;
 
@@ -67,11 +66,12 @@ public class DeviceOrderView extends Div {
 
 	private DeviceOrderDataService deviceOrderService;
 	
+	
+	
 	public DeviceOrderView() {
+		
 		setId("my-device-manager-view");
 		this.deviceOrderService = DeviceOrderDataService.getInstance();
-		
-		
 		
 		 // Configure Grid
         grid = new Grid<>(DeviceOrder.class);
@@ -80,12 +80,25 @@ public class DeviceOrderView extends Div {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
         
+    	orderDetails.setEnabled(false);
+        
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
-          producer.setEnabled(false);
-          deviceModel.setEnabled(false);
-          quantity.setEnabled(false);
-          deliveryDate.setEnabled(false);
+        	
+        	if (event.getValue() != null) {
+//              Device deviceFromBackend = deviceService.getById(event.getValue().getId());
+            	DeviceOrder deviceOrderFromBackend = event.getValue();
+            	orderDetails.setEnabled(true);
+                // when a row is selected but the data is no longer available, refresh grid
+                if (deviceOrderFromBackend != null) {
+//                    populateForm(deviceOrderFromBackend);
+                } else {
+                    refreshGrid();
+                }
+            } else {
+                orderDetails.setEnabled(false);
+            }
+        	
         });
 
         
@@ -95,22 +108,16 @@ public class DeviceOrderView extends Div {
 		// Bind fields. This where you'd define e.g. validation rules
 		binder.bindInstanceFields(this);
 
-		cancel.addClickListener(e -> {															
-			clearForm();
-			deviceModel.setEnabled(false);
-//			refreshGrid();
+		
+		
+		newOrder.addClickListener(e -> {
+			openEditorDialog();
 		});
-
-		createMail.addClickListener(e -> {
-			try {
-				this.currentDeviceOrder = new DeviceOrder();
-				binder.writeBean(this.currentDeviceOrder);
-			} catch (ValidationException e1) {
-				Notification.show("An exception happened while trying to create a new Device Order.");
-			}
-			
-			openMailControlDialog();
+		
+		orderDetails.addClickListener(e -> {
+			openOrderDetailsDialog();
 		});
+		
 		
 		// add producers to combobox producer
 		producer.setItems(ProducerDataService.getInstance().getAll());
@@ -137,41 +144,93 @@ public class DeviceOrderView extends Div {
 //	        }
 //		});
 		
-        SplitLayout splitLayout = new SplitLayout();
-        splitLayout.setSizeFull();
-
-        createGridLayout(splitLayout);
-        createEditorLayout(splitLayout);
-
-        add(splitLayout);
+        
+        createGridLayout();
 	}
 
-	private void createEditorLayout(SplitLayout splitLayout) {
+	private void createGridLayout() {
+		VerticalLayout gridLayout = new VerticalLayout();
+		gridLayout.setId("grid-layout");
+		gridLayout.setSizeFull();
+		
+		Div gridDiv = new Div();
+		gridDiv.setId("grid");
+		gridDiv.setSizeFull();
+		gridLayout.add(gridDiv);
+		gridDiv.add(grid);
+		
+		createButtonLayout(gridDiv, orderDetails, newOrder);
+		add(gridLayout);
+	}
+	
+	private void openEditorDialog() {
+		
+		Dialog editorDialog = new Dialog();
 		Div editorLayoutDiv = new Div();
 		editorLayoutDiv.setId("editor-layout");
+		editorDialog.add(editorLayoutDiv);
 
 		Div editorDiv = new Div();
 		editorDiv.setId("editor");
 		editorLayoutDiv.add(editorDiv);
 //		editorLayoutDiv.setSizeFull();
 
-		FormLayout formLayout = new FormLayout();
-		
 		quantity.setMin(1);
 		quantity.setHasControls(true);
 		
 		LocalDate dayAfterTomorrow = LocalDate.now().plus(2, ChronoUnit.DAYS);
-//		deliveryDate.setValue(dayAfterTomorrow);
 		deliveryDate.setMin(dayAfterTomorrow);
 		
-		addFormItem(editorDiv, formLayout, producer, "Producer");
-		addFormItem(editorDiv, formLayout, deviceModel, "Device Model");
-		addFormItem(editorDiv, formLayout, quantity, "Quantity");
-		addFormItem(editorDiv, formLayout, deliveryDate, "Delivery Date");
+		FormLayout formLayout = new FormLayout();
+		formLayout.setWidthFull();
+		
+		formLayout.setResponsiveSteps(
+		           new ResponsiveStep("80px", 1),
+		           new ResponsiveStep("30px", 2));
+		
+		producer.setPlaceholder("Producer");
+		deliveryDate.setPlaceholder("Delivery Date");
+		deviceModel.setPlaceholder("Device Model");
+		quantity.setPlaceholder("Quantity");
+		
+		formLayout.add(producer, 2);
+		formLayout.add(deliveryDate, 2);
+		formLayout.add(deviceModel, quantity);
+		
+		editorDiv.add(formLayout);
+		
+		Button next = new Button("Next Position");
+		next.addClickListener(e -> {
+			
+		});
+		editorDiv.add(next);
+		
+//		addFormItem(editorDiv, formLayout, producer, "Producer");
+//		addFormItem(editorDiv, formLayout2, deviceModel, "Device Model");
+//		addFormItem(editorDiv, formLayout2, quantity, "Quantity");
+//		addFormItem(editorDiv, formLayout, deliveryDate, "Delivery Date");
+		
+		cancel.addClickListener(e -> {															
+			clearForm();
+			deviceModel.setEnabled(false);
+//			refreshGrid();
+			editorDialog.close();
+		});
+
+		createMail.addClickListener(e -> {
+			try {
+				this.currentDeviceOrder = new DeviceOrder();
+				binder.writeBean(this.currentDeviceOrder);
+			} catch (ValidationException e1) {
+				Notification.show("An exception happened while trying to create a new Device Order.");
+			}
+			
+			openMailControlDialog();
+		});
 		
 		createButtonLayout(editorLayoutDiv, cancel, createMail);
 		
-		splitLayout.addToSecondary(editorLayoutDiv);
+		editorDialog.open();
 	}
 
 	private void createButtonLayout(Div editorLayoutDiv, Button cancel, Button accept) {
@@ -184,15 +243,22 @@ public class DeviceOrderView extends Div {
 		buttonLayout.add(accept, cancel);
 		editorLayoutDiv.add(buttonLayout);
 	}
-
-	private void createGridLayout(SplitLayout splitLayout) {
-		Div wrapper = new Div();
-		wrapper.setId("grid-wrapper");
-		wrapper.setWidthFull();
-		splitLayout.addToPrimary(wrapper);
-		wrapper.add(grid);
+	
+	public void openOrderDetailsDialog() {
+		Dialog detailsDialog = new Dialog();
+		
+		Button back = new Button("Back");
+		detailsDialog.add(back);
+		
+		
+		back.addClickListener(e -> {
+			detailsDialog.close();
+		});
+		detailsDialog.open();
 	}
-
+	
+	
+	
 	private void addFormItem(Div wrapper, FormLayout formLayout, AbstractField field, String fieldName) {
 		formLayout.addFormItem(field, fieldName);
 		wrapper.add(formLayout);
@@ -241,6 +307,8 @@ public class DeviceOrderView extends Div {
 				mailControlDialog.close();
 				
 				Notification.show("New Device Order created.");
+				
+				refreshGrid();
 //			} catch (ValidationException validationException) {
 //				Notification.show("An exception happened while trying to create a new Device Order.");
 //			}
