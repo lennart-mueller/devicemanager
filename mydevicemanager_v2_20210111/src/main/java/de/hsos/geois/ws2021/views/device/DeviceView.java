@@ -13,7 +13,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -38,13 +37,10 @@ public class DeviceView extends Div {
 	private static final long serialVersionUID = 4939100739729795870L;
 
 	private Grid<Device> grid;
-
-    private TextField name = new TextField();
-    private TextField artNr = new TextField();
+	
     private TextField serialNr = new TextField();
-    private BigDecimalField purchasePrice = new BigDecimalField();
-    private BigDecimalField salesPrice = new BigDecimalField();
-    private Select<String> deliveryStatus = new Select<>();
+    
+    private Select<String> isDelivered = new Select<>();
     
     private ComboBox<Customer> customer = new ComboBox<Customer>();
     private ComboBox<DeviceModel> deviceModels = new ComboBox<DeviceModel>();
@@ -65,7 +61,7 @@ public class DeviceView extends Div {
         this.deviceService = DeviceDataService.getInstance();
         // Configure Grid
         grid = new Grid<>(Device.class);
-        grid.setColumns("deviceModel", "serialNr");
+        grid.setColumns("deviceModel", "serialNr", "isDelivered");
         grid.setDataProvider(new DeviceDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
@@ -148,9 +144,8 @@ public class DeviceView extends Div {
         	}
         });
         
-        deliveryStatus.setItems("true", "false");
-        deliveryStatus.setPlaceholder("deliveryStatus");
-
+        isDelivered.setItems("true", "false");
+        
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
 
@@ -170,12 +165,9 @@ public class DeviceView extends Div {
 
         FormLayout formLayout = new FormLayout();
         addFormItem(editorDiv, formLayout, deviceModels, "Device Model");
-//        addFormItem(editorDiv, formLayout, name, "Device name");
-//        addFormItem(editorDiv, formLayout, artNr, "Article number");
         addFormItem(editorDiv, formLayout, serialNr, "Serial number");
-//        addFormItem(editorDiv, formLayout, purchasePrice, "Purchase price");
-//        addFormItem(editorDiv, formLayout, salesPrice, "Sales price");
         addFormItem(editorDiv, formLayout, customer, "Customer");
+        addFormItem(editorDiv, formLayout, isDelivered, "Delivered?");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);

@@ -19,13 +19,13 @@ public class Device extends AbstractEntity {
 	@Column(unique=true)
 	private String serialNr;
 	
-	private boolean isDelivered;
+	private String isDelivered;
 
-	public boolean isDelivered() {
+	public String getIsDelivered() {
 		return isDelivered;
 	}
 
-	public void setDelivered(boolean isDelivered) {
+	public void setIsDelivered(String isDelivered) {
 		this.isDelivered = isDelivered;
 	}
 
