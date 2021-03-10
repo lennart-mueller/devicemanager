@@ -23,6 +23,9 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
@@ -36,8 +39,13 @@ import com.vaadin.flow.router.RouteAlias;
 import de.hsos.geois.ws2021.data.entity.Customer;
 import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.DeviceModel;
+import de.hsos.geois.ws2021.data.entity.Producer;
+import de.hsos.geois.ws2021.data.entity.User;
+import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.data.service.DeviceModelDataService;
+import de.hsos.geois.ws2021.data.service.ProducerDataService;
+import de.hsos.geois.ws2021.data.service.UserDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "upload-device", layout = MainView.class)
@@ -51,64 +59,107 @@ public class UploadDeviceView extends Div {
 	 */
 	private static final long serialVersionUID = -4135719129089091503L;
 
-	private Grid<Device> grid;
+	private MemoryBuffer bufferDevice;
+	private MemoryBuffer bufferDeviceModel;
+	private MemoryBuffer bufferProducer;
+	private MemoryBuffer bufferCustomer;
+	private MemoryBuffer bufferUser;
+	
+	private Upload uploadDevice;
+	private Upload uploadDeviceModel;
+	private Upload uploadProducer;
+	private Upload uploadCustomer;
+	private Upload uploadUser;
 
-	private MemoryBuffer buffer;
-	private Upload upload;
-	private Div divOutput;
-
-	private Binder<Device> binder;
+	private Binder<Device> binderDevice;
+	private Binder<DeviceModel> binderDeviceModel;
+	private Binder<Producer> binderProducer;
+	private Binder<Customer> binderCustomer;
+	private Binder<User> binderUser;
 
 	private Device currentDevice = new Device();
 	private DeviceModel currentDeviceModel = new DeviceModel();
+	private Producer currentProducer = new Producer();
+	private Customer currentCustomer = new Customer();
+	private User currentUser = new User();
+	
 	private Collection<DeviceModel> colDeviceModels = new ArrayList<DeviceModel>();
 
 	private DeviceDataService deviceService;
+	private DeviceModelDataService deviceModelDataService;
+	private ProducerDataService producerDataService;
+	private CustomerDataService customerDataService;
+	private UserDataService userDataService;
 
+
+	
 	public UploadDeviceView() {
 		setId("my-device-manager-view");
-        this.deviceService = DeviceDataService.getInstance();
-
-		MemoryBuffer buffer = new MemoryBuffer();
-		Upload upload = new Upload(buffer);
-		Div output = new Div();
 		
-        // Configure Form
-        binder = new Binder<>(Device.class);
-
-//        // Bind fields. This where you'd define e.g. validation rules
-//        binder.bindInstanceFields(this);
-
-		upload.addSucceededListener(event -> {
-
-			Component component = createTextComponent(buffer.getInputStream());
-			
-			createDeviceReader(buffer.getInputStream());
-			
-			showOutput(event.getFileName(), component, output);
+		//Device
+		Div outputDevice = new Div();
+		this.deviceService = DeviceDataService.getInstance();
+        binderDevice = new Binder<>(Device.class);
+		MemoryBuffer bufferDevice = new MemoryBuffer();
+		Upload uploadDevice = new Upload(bufferDevice);
+		uploadDevice.setDropLabel(new Label("Upload files in .csv format for Data Device"));
+		uploadDevice.addSucceededListener(event -> {			
+			readDevices(bufferDevice.getInputStream());
 		});
+		add(uploadDevice, outputDevice);
+		
+		//Device Model
+		Div outputDeviceModel = new Div();
+		this.deviceModelDataService = DeviceModelDataService.getInstance();
+        binderDeviceModel = new Binder<>(DeviceModel.class);
+		MemoryBuffer bufferDeviceModel = new MemoryBuffer();
+		Upload uploadDeviceModel = new Upload(bufferDeviceModel);
+		uploadDeviceModel.setDropLabel(new Label("Upload files in .csv format for Data Device Model (WIP)"));
+		uploadDeviceModel.addSucceededListener(event -> {			
+			//readDevices(bufferDeviceModel.getInputStream());
+		});
+		add(uploadDeviceModel, outputDeviceModel);
+		
+		//Producer
+		Div outputProducer = new Div();
+		this.producerDataService = ProducerDataService.getInstance();
+        binderProducer = new Binder<>(Producer.class);
+		MemoryBuffer bufferProducer = new MemoryBuffer();
+		Upload uploadProducer = new Upload(bufferProducer);
+		uploadProducer.setDropLabel(new Label("Upload files in .csv format for Data Producer (WIP)"));
+		uploadProducer.addSucceededListener(event -> {			
+			//readDevices(bufferProducer.getInputStream());
+		});
+		add(uploadProducer, outputProducer);
+		
+		//Customer
+		Div outputCustomer = new Div();
+		this.customerDataService = CustomerDataService.getInstance();
+        binderCustomer = new Binder<>(Customer.class);
+		MemoryBuffer bufferCustomer = new MemoryBuffer();
+		Upload uploadCustomer = new Upload(bufferCustomer);
+		uploadCustomer.setDropLabel(new Label("Upload files in .csv format for Data Customer (WIP)"));
+		uploadCustomer.addSucceededListener(event -> {			
+			//readDevices(bufferCustomer.getInputStream());
+		});
+		add(uploadCustomer, outputCustomer);
+		
+		//User
+		Div outputUser = new Div();
+		this.userDataService = UserDataService.getInstance();
+        binderUser = new Binder<>(User.class);
+		MemoryBuffer bufferUser = new MemoryBuffer();
+		Upload uploadUser = new Upload(bufferUser);
+		uploadUser.setDropLabel(new Label("Upload files in .csv format for Data User (WIP)"));
+		uploadUser.addSucceededListener(event -> {			
+			//readDevices(bufferUser.getInputStream());
+		});
+		add(uploadUser, outputUser);
+		
 
-		add(upload, output);
 	}
 
-	private Component createTextComponent(InputStream stream) {
-		String text;
-		try {
-			text = IOUtils.toString(stream, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			text = "exception reading stream";
-		}
-		return new Text(text);
-	}
-
-	private void showOutput(String text, Component content, HasComponents outputContainer) {
-		HtmlComponent p = new HtmlComponent(Tag.P);
-		p.getElement().setText(text);
-		outputContainer.add(p);
-		outputContainer.add(content);
-	}
-
-	private void createDeviceReader(InputStream stream) {
+	private void readDevices(InputStream stream) {
 
 		InputStreamReader isReader = new InputStreamReader(stream);
 		BufferedReader reader = new BufferedReader(isReader);
@@ -118,12 +169,14 @@ public class UploadDeviceView extends Div {
 				currentDevice = new Device();
 			for (CSVRecord csvRecord : csvParser) {
 				currentDeviceModel = DeviceModelDataService.getInstance().getDeviceModelByArtNr(csvRecord.get(0));
-//				currentDeviceModel = findDeviceModelByArtNrString(csvRecord.get(0), colDeviceModels);
+				if(currentDeviceModel == null){
+					Notification.show("Reading Data failed!");
+					return;
+				}
 				currentDevice.setDeviceModel(currentDeviceModel);
 				currentDevice.setSerialNr(csvRecord.get(1));
-				Notification.show(currentDevice.toString() + "(" + csvRecord.get(0) + " : " + csvRecord.get(1) + ")");
 				try {
-					binder.writeBean(this.currentDevice);
+					binderDevice.writeBean(this.currentDevice);
 				} catch (ValidationException e1) {
 					Notification.show(e1.toString());
 					e1.printStackTrace();
@@ -136,5 +189,7 @@ public class UploadDeviceView extends Div {
 			e.printStackTrace();
 		}
 
+		Notification.show("Reading Data was Successfull!");
+		
 	}
 }
