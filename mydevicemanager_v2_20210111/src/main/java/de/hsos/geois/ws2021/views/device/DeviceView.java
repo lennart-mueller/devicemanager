@@ -12,7 +12,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -37,30 +36,23 @@ public class DeviceView extends Div {
 	private static final long serialVersionUID = 4939100739729795870L;
 
 	private Grid<Device> grid;
-
-    private TextField name = new TextField();
-    private TextField artNr = new TextField();
+	
     private TextField serialNr = new TextField();
-    private BigDecimalField purchasePrice = new BigDecimalField();
-    private BigDecimalField salesPrice = new BigDecimalField();
     
     private ComboBox<Customer> customer = new ComboBox<Customer>();
-    private ComboBox<DeviceModel> deviceModels = new ComboBox<DeviceModel>();
+    private ComboBox<DeviceModel> deviceModel = new ComboBox<DeviceModel>();
 
-    // TODO: Refactore these buttons in a separate (abstract) form class
+    // Refactore these buttons in a separate (abstract) form class
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
     private Binder<Device> binder;
     
-
     private Device currentDevice = new Device();
 
-    private DeviceDataService deviceService;
 
     public DeviceView() {
         setId("my-device-manager-view");
-        this.deviceService = DeviceDataService.getInstance();
         // Configure Grid
         grid = new Grid<>(Device.class);
         grid.setColumns("deviceModel", "serialNr");
@@ -71,11 +63,11 @@ public class DeviceView extends Div {
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-//              Device deviceFromBackend = deviceService.getById(event.getValue().getId());
             	Device deviceFromBackend = event.getValue();
+            	this.currentDevice = deviceFromBackend;
                 // when a row is selected but the data is no longer available, refresh grid
                 if (deviceFromBackend != null) {
-                    populateForm(deviceFromBackend);
+                    populateForm(this.currentDevice);
                 } else {
                     refreshGrid();
                 }
@@ -90,63 +82,42 @@ public class DeviceView extends Div {
         // Bind fields. This where you'd define e.g. validation rules
         binder.bindInstanceFields(this);
 
+        // add deviceModels to combobox deviceModel
+        deviceModel.setItems(DeviceModelDataService.getInstance().getAll());
+       
+        // add users to combobox user
+        customer.setItems(CustomerDataService.getInstance().getAll());
+       
+        save.addClickListener(e -> {
+            if (deviceModel.getValue() != null) {
+        		try {
+	                if (this.currentDevice == null) {
+	                    this.currentDevice = new Device();
+	                }
+	                
+	                DeviceModel currentDeviceModel = deviceModel.getValue();
+	                this.currentDevice.setDeviceModel(currentDeviceModel);
+		            
+	                binder.writeBean(this.currentDevice);
+	                this.currentDevice = DeviceDataService.getInstance().update(this.currentDevice);
+	                
+	                clearForm();
+	                refreshGrid();
+	                Notification.show("Device details stored.");
+        		} catch (ValidationException validationException) {
+        			Notification.show("An exception happened while trying to store the device details.");
+        		}
+            } else {
+            	Notification.show("Device Model is not allowed to be empty.");
+            }
+            
+        });
+        
         cancel.addClickListener(e -> {
             clearForm();
             refreshGrid();
         });
-
-        save.addClickListener(e -> {
-            try {
-                if (this.currentDevice == null) {
-                    this.currentDevice = new Device();
-                }
-                binder.writeBean(this.currentDevice);
-                this.currentDevice = deviceService.update(this.currentDevice);
-                clearForm();
-                refreshGrid();
-                Notification.show("Device details stored.");
-            } catch (ValidationException validationException) {
-                Notification.show("An exception happened while trying to store the device details.");
-            }
-        });
-        
-        // add users to combobox user
-        customer.setItems(CustomerDataService.getInstance().getAll());
-        
-        customer.addValueChangeListener(event -> {
-        	if (event.isFromClient() && event.getValue()!=null) {
-        		event.getValue().addDevice(this.currentDevice);
-        		CustomerDataService.getInstance().save(event.getValue());
-        		this.currentDevice.setCustomer(event.getValue());
-        		try {
-					binder.writeBean(this.currentDevice);
-				} catch (ValidationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-                this.currentDevice = deviceService.update(this.currentDevice);
-
-        	}
-        });
-        
-        deviceModels.setItems(DeviceModelDataService.getInstance().getAll());
-        
-        deviceModels.addValueChangeListener(event -> {
-        	if (event.isFromClient() && event.getValue()!=null) {
-        		event.getValue().addDevice(this.currentDevice);
-        		DeviceModelDataService.getInstance().save(event.getValue());
-        		this.currentDevice.setDeviceModel(event.getValue());
-        		try {
-					binder.writeBean(this.currentDevice);
-				} catch (ValidationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-                this.currentDevice = deviceService.update(this.currentDevice);
-        	}
-        });
-        
-
+       
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
 
@@ -165,7 +136,7 @@ public class DeviceView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        addFormItem(editorDiv, formLayout, deviceModels, "Device Model");
+        addFormItem(editorDiv, formLayout, deviceModel, "Device Model");
 //        addFormItem(editorDiv, formLayout, name, "Device name");
 //        addFormItem(editorDiv, formLayout, artNr, "Article number");
         addFormItem(editorDiv, formLayout, serialNr, "Serial number");
@@ -196,7 +167,8 @@ public class DeviceView extends Div {
         wrapper.add(grid);
     }
 
-    private void addFormItem(Div wrapper, FormLayout formLayout, AbstractField field, String fieldName) {
+    @SuppressWarnings("rawtypes")
+	private void addFormItem(Div wrapper, FormLayout formLayout, AbstractField field, String fieldName) {
         formLayout.addFormItem(field, fieldName);
         wrapper.add(formLayout);
         field.getElement().getClassList().add("full-width");
@@ -208,11 +180,15 @@ public class DeviceView extends Div {
     }
 
     private void clearForm() {
-        populateForm(null);
+        this.currentDevice = null;
+    	deviceModel.clear();
+    	serialNr.clear();
+    	customer.clear();
     }
 
     private void populateForm(Device value) {
-        this.currentDevice = value;
-        binder.readBean(this.currentDevice);
+        deviceModel.setValue(value.getDeviceModel());
+    	serialNr.setValue(value.getSerialNr());
+    	customer.setValue(value.getCustomer());
     }
 }
