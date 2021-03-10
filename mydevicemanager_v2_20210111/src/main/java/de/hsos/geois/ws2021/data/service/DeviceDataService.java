@@ -12,6 +12,7 @@ import com.vaadin.flow.data.provider.SortDirection;
 import de.hsos.geois.ws2021.data.EntityManagerHandler;
 import de.hsos.geois.ws2021.data.entity.Customer;
 import de.hsos.geois.ws2021.data.entity.Device;
+import de.hsos.geois.ws2021.data.entity.DeviceModel;
 
 @Service
 public class DeviceDataService extends DataService<Device> {
@@ -90,4 +91,5 @@ public class DeviceDataService extends DataService<Device> {
 				.setParameter("customer", customer)
 				.getResultList());
 	}
+
 }

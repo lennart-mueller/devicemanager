@@ -93,4 +93,17 @@ public class DeviceModelDataService extends DataService<DeviceModel> {
 				.setParameter("producer", producer)
 				.getResultList());
 	}
+	
+	public DeviceModel getDeviceModelByArtNr(String artNr) {
+		Collection<DeviceModel> deviceModels;
+		deviceModels = EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT dm FROM DeviceModel dm WHERE dm.artNr = :artNr ORDER BY dm.name", DeviceModel.class)
+				.setParameter("artNr", artNr)
+				.getResultList());
+			for (DeviceModel dM : deviceModels) {
+				if (dM.getArtNr().equals(artNr)) {
+					return dM;
+				}
+			}
+			return null;
+	}
 }

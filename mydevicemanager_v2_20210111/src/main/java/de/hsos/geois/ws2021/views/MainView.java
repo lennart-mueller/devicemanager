@@ -29,6 +29,7 @@ import de.hsos.geois.ws2021.views.device.DeviceView;
 import de.hsos.geois.ws2021.views.device.model.DeviceModelView;
 import de.hsos.geois.ws2021.views.device.order.DeviceOrderView;
 import de.hsos.geois.ws2021.views.producer.ProducerView;
+import de.hsos.geois.ws2021.views.upload.device.UploadDeviceView;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -95,6 +96,7 @@ public class MainView extends AppLayout {
             createTab("Device Order", DeviceOrderView.class),
             createTab("Producer", ProducerView.class),
             createTab("Device Model", DeviceModelView.class),
+            createTab("Upload Devices", UploadDeviceView.class),
             createTab("About", AboutView.class)
         };
     }
