@@ -1,4 +1,4 @@
-package de.hsos.geois.ws2021.views.upload.device;
+package de.hsos.geois.ws2021.views.upload.data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,7 +52,7 @@ import de.hsos.geois.ws2021.views.MainView;
 @PageTitle("MyDeviceManager")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
 @RouteAlias(value = "upload-device", layout = MainView.class)
-public class UploadDeviceView extends Div {
+public class UploadDataView extends Div {
 
 	/**
 	 * 
@@ -93,7 +93,7 @@ public class UploadDeviceView extends Div {
 
 
 	
-	public UploadDeviceView() {
+	public UploadDataView() {
 		setId("my-device-manager-view");
 		
 		//Device
