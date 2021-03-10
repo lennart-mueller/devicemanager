@@ -44,7 +44,7 @@ public class DeviceModelView extends Div {
     private ComboBox<Producer> producer = new ComboBox<Producer>();
 
 
-    // TODO: Refactore these buttons in a separate (abstract) form class
+    // Refactore these buttons in a separate (abstract) form class
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
@@ -97,6 +97,7 @@ public class DeviceModelView extends Div {
                     this.currentDeviceModel = new DeviceModel();
                 }
                 binder.writeBean(this.currentDeviceModel);
+        		this.currentDeviceModel.setProducer(producer.getValue());
                 this.currentDeviceModel = deviceModelService.update(this.currentDeviceModel);
                 clearForm();
                 refreshGrid();
@@ -108,22 +109,6 @@ public class DeviceModelView extends Div {
         
         // add users to combobox user
         producer.setItems(ProducerDataService.getInstance().getAll());
-        
-        producer.addValueChangeListener(event -> {
-        	if (event.isFromClient() && event.getValue()!=null) {
-        		event.getValue().addDeviceModel(this.currentDeviceModel);
-        		ProducerDataService.getInstance().save(event.getValue());
-        		this.currentDeviceModel.setProducer(event.getValue());
-        		try {
-					binder.writeBean(this.currentDeviceModel);
-				} catch (ValidationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-                this.currentDeviceModel = deviceModelService.update(this.currentDeviceModel);
-        	}
-        });
-        
 
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -172,7 +157,8 @@ public class DeviceModelView extends Div {
         wrapper.add(grid);
     }
 
-    private void addFormItem(Div wrapper, FormLayout formLayout, AbstractField field, String fieldName) {
+    @SuppressWarnings("rawtypes")
+	private void addFormItem(Div wrapper, FormLayout formLayout, AbstractField field, String fieldName) {
         formLayout.addFormItem(field, fieldName);
         wrapper.add(formLayout);
         field.getElement().getClassList().add("full-width");

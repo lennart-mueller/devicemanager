@@ -10,8 +10,6 @@ import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
 
 import de.hsos.geois.ws2021.data.EntityManagerHandler;
-import de.hsos.geois.ws2021.data.entity.Customer;
-import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.DeviceOrder;
 
 @Service
@@ -22,8 +20,8 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 	private static DeviceOrderDataService INSTANCE;
     
     public static final String SORT_ON_ID = "do.id";
-	public static final String SORT_ON_DEVICEMODEL = "do.deviceModel";
-	public static final String SORT_ON_QUANTITY = "do.quantity";
+//	public static final String SORT_ON_DEVICEMODEL = "do.deviceModel";
+//	public static final String SORT_ON_QUANTITY = "do.quantity";
 	public static final String SORT_ON_ORDERDATE = "do.orderDate";
 	public static final String SORT_ON_DELIVERYDATE = "do.deliveryDate";
 	
@@ -89,9 +87,9 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 				 .getResultList());
 	}
 
-	public Collection<DeviceOrder> getDeviceOrderssOfProducer(String producer) {
-		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT do FROM DeviceOrder do WHERE do.producer = :producer ORDER BY do.id", DeviceOrder.class)
-				.setParameter("producer", producer)
-				.getResultList());
-	}
+//	public Collection<DeviceOrder> getDeviceOrdersOfProducer(String producer) {
+//		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT do FROM DeviceOrder do WHERE do.producer = :producer ORDER BY do.id", DeviceOrder.class)
+//				.setParameter("producer", producer)
+//				.getResultList());
+//	}
 }

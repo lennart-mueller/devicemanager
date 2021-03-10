@@ -22,7 +22,7 @@ public class DeviceModel extends AbstractEntity {
 	private Producer producer;
 	
 	@OneToMany(mappedBy = "deviceModel", cascade = CascadeType.ALL, orphanRemoval = false)
-	private Collection<DeviceOrder> deviceOrders;
+	private Collection<OrderPosition> orderPositions;
 	
 	@OneToMany(mappedBy = "deviceModel", cascade = CascadeType.ALL, orphanRemoval = false)
 	private Collection<Device> devices;
@@ -35,7 +35,7 @@ public class DeviceModel extends AbstractEntity {
 
 	
 	public DeviceModel() {
-		this.deviceOrders = new ArrayList<DeviceOrder>();
+		this.orderPositions = new ArrayList<OrderPosition>();
 		this.devices = new ArrayList<Device>();
 	}
 	
@@ -79,12 +79,12 @@ public class DeviceModel extends AbstractEntity {
 		this.producer = producer;
 	}
 	
-	public Collection<DeviceOrder> getDeviceOrders() {
-		return deviceOrders;
+	public Collection<OrderPosition> getOrderPositions() {
+		return orderPositions;
 	}
 
-	public void setDeviceOrders(Collection<DeviceOrder> deviceOrders) {
-		this.deviceOrders = deviceOrders;
+	public void setOrderPositions(Collection<OrderPosition> orderPositions) {
+		this.orderPositions = orderPositions;
 	}
 	
 	public Collection<Device> getDevices() {
@@ -95,12 +95,12 @@ public class DeviceModel extends AbstractEntity {
 		this.devices = devices;
 	}
 
-	public boolean addDeviceOrder(DeviceOrder deviceOrder) {
-		return getDeviceOrders().add(deviceOrder);
+	public boolean addOrderPosition(OrderPosition orderPosition) {
+		return getOrderPositions().add(orderPosition);
 	}
 	
-	public boolean removeDeviceOrder(DeviceOrder deviceOrder) {
-		return getDeviceOrders().remove(deviceOrder);
+	public boolean removeOrderPosition(OrderPosition orderPosition) {
+		return getOrderPositions().remove(orderPosition);
 	}
 	
 	public boolean addDevice(Device device) {
@@ -118,7 +118,7 @@ public class DeviceModel extends AbstractEntity {
 //	}	
 	
 	public String toString() {
-		return "["+getProducer()+"] "+ getName();
+		return getName() +" ["+getProducer()+"]";
 	}	
 //	
 //	@Override

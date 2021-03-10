@@ -1,46 +1,37 @@
 package de.hsos.geois.ws2021.data.entity;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
-import ch.qos.logback.core.rolling.helper.PeriodicityType;
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
 @Entity
 public class DeviceOrder extends AbstractEntity {
 	
-	private int quantity;
 	private LocalDate orderDate;
 	private LocalDate deliveryDate;
-
+	private String status;
+	private int amountOfPositions;
+	private int amountOfDevices;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
-	private DeviceModel deviceModel;
+	private Producer producer;
+	
+	@OneToMany(mappedBy = "deviceOrder", cascade = CascadeType.ALL, orphanRemoval = false)
+	private Collection<OrderPosition> orderPositions;
 	
 	
 	public DeviceOrder() {
+		this.orderPositions = new ArrayList<OrderPosition>();
 		this.orderDate = LocalDate.now();
-	}
-	
-	public DeviceModel getDeviceModel() {
-		return deviceModel;
-	}
-	
-	public void setDeviceModel(DeviceModel deviceModel) {
-		this.deviceModel = deviceModel;
-	}
-	
-	public int getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
+		this.status = "Request sent";
 	}
 
 	public LocalDate getOrderDate() {
@@ -55,9 +46,63 @@ public class DeviceOrder extends AbstractEntity {
 		return deliveryDate;
 	}
 	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Producer getProducer() {
+		return producer;
+	}
+
+	public void setProducer(Producer producer) {
+		this.producer = producer;
+	}
+	
 	public void setDeliveryDate(LocalDate deliveryDate) {
 		this.deliveryDate = deliveryDate;
 	}
 
+	public Collection<OrderPosition> getOrderPositions() {
+		return orderPositions;
+	}
+
+	public void setOrderPositions(Collection<OrderPosition> orderPositions) {
+		this.orderPositions = orderPositions;
+	}
 	
+	public boolean addOrderPosition(OrderPosition orderPosition) {
+		return getOrderPositions().add(orderPosition);
+	}
+	
+	public boolean removeOrderPosition(OrderPosition orderPosition) {
+		return getOrderPositions().remove(orderPosition);
+	}
+
+	public void setAmountOfPositions(Collection<OrderPosition> orderPositions) {
+		int amountOfPositions = 0;
+		for(OrderPosition position : orderPositions) {
+			amountOfPositions =	amountOfPositions + 1;
+		}
+		this.amountOfPositions = amountOfPositions;
+	}
+	
+	public int getAmountOfPositions() {
+		return this.amountOfPositions;
+	}
+
+	public void setAmountOfDevices(Collection<OrderPosition> orderPositions) {
+		int amountOfDevices = 0;
+		for(OrderPosition position : orderPositions) {
+			amountOfDevices =	amountOfDevices + position.getQuantity();
+		}
+		this.amountOfDevices = amountOfDevices;
+	}
+
+	public int getAmountOfDevices() {
+		return this.amountOfDevices;
+	}
 }
