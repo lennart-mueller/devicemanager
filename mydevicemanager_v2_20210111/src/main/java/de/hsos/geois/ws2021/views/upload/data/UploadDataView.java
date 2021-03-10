@@ -48,10 +48,10 @@ import de.hsos.geois.ws2021.data.service.ProducerDataService;
 import de.hsos.geois.ws2021.data.service.UserDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
-@Route(value = "upload-device", layout = MainView.class)
+@Route(value = "upload-data", layout = MainView.class)
 @PageTitle("MyDeviceManager")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
-@RouteAlias(value = "upload-device", layout = MainView.class)
+@RouteAlias(value = "upload-data", layout = MainView.class)
 public class UploadDataView extends Div {
 
 	/**
