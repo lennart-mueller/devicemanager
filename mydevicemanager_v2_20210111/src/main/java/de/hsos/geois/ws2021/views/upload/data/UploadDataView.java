@@ -64,7 +64,7 @@ public class UploadDataView extends Div {
 	private MemoryBuffer bufferProducer;
 	private MemoryBuffer bufferCustomer;
 	private MemoryBuffer bufferUser;
-	
+
 	private Upload uploadDevice;
 	private Upload uploadDeviceModel;
 	private Upload uploadProducer;
@@ -82,7 +82,7 @@ public class UploadDataView extends Div {
 	private Producer currentProducer = new Producer();
 	private Customer currentCustomer = new Customer();
 	private User currentUser = new User();
-	
+
 	private Collection<DeviceModel> colDeviceModels = new ArrayList<DeviceModel>();
 
 	private DeviceDataService deviceService;
@@ -91,71 +91,68 @@ public class UploadDataView extends Div {
 	private CustomerDataService customerDataService;
 	private UserDataService userDataService;
 
-
-	
 	public UploadDataView() {
 		setId("my-device-manager-view");
-		
-		//Device
+
+		// Device
 		Div outputDevice = new Div();
 		this.deviceService = DeviceDataService.getInstance();
-        binderDevice = new Binder<>(Device.class);
+		binderDevice = new Binder<>(Device.class);
 		MemoryBuffer bufferDevice = new MemoryBuffer();
 		Upload uploadDevice = new Upload(bufferDevice);
 		uploadDevice.setDropLabel(new Label("Upload files in .csv format for Data Device"));
-		uploadDevice.addSucceededListener(event -> {			
+		uploadDevice.addSucceededListener(event -> {
 			readDevices(bufferDevice.getInputStream());
 		});
 		add(uploadDevice, outputDevice);
-		
-		//Device Model
-		Div outputDeviceModel = new Div();
-		this.deviceModelDataService = DeviceModelDataService.getInstance();
-        binderDeviceModel = new Binder<>(DeviceModel.class);
-		MemoryBuffer bufferDeviceModel = new MemoryBuffer();
-		Upload uploadDeviceModel = new Upload(bufferDeviceModel);
-		uploadDeviceModel.setDropLabel(new Label("Upload files in .csv format for Data Device Model (WIP)"));
-		uploadDeviceModel.addSucceededListener(event -> {			
-			//readDevices(bufferDeviceModel.getInputStream());
-		});
-		add(uploadDeviceModel, outputDeviceModel);
-		
-		//Producer
-		Div outputProducer = new Div();
-		this.producerDataService = ProducerDataService.getInstance();
-        binderProducer = new Binder<>(Producer.class);
-		MemoryBuffer bufferProducer = new MemoryBuffer();
-		Upload uploadProducer = new Upload(bufferProducer);
-		uploadProducer.setDropLabel(new Label("Upload files in .csv format for Data Producer (WIP)"));
-		uploadProducer.addSucceededListener(event -> {			
-			//readDevices(bufferProducer.getInputStream());
-		});
-		add(uploadProducer, outputProducer);
-		
-		//Customer
-		Div outputCustomer = new Div();
-		this.customerDataService = CustomerDataService.getInstance();
-        binderCustomer = new Binder<>(Customer.class);
-		MemoryBuffer bufferCustomer = new MemoryBuffer();
-		Upload uploadCustomer = new Upload(bufferCustomer);
-		uploadCustomer.setDropLabel(new Label("Upload files in .csv format for Data Customer (WIP)"));
-		uploadCustomer.addSucceededListener(event -> {			
-			//readDevices(bufferCustomer.getInputStream());
-		});
-		add(uploadCustomer, outputCustomer);
-		
-		//User
-		Div outputUser = new Div();
-		this.userDataService = UserDataService.getInstance();
-        binderUser = new Binder<>(User.class);
-		MemoryBuffer bufferUser = new MemoryBuffer();
-		Upload uploadUser = new Upload(bufferUser);
-		uploadUser.setDropLabel(new Label("Upload files in .csv format for Data User (WIP)"));
-		uploadUser.addSucceededListener(event -> {			
-			//readDevices(bufferUser.getInputStream());
-		});
-		add(uploadUser, outputUser);
-		
+
+//		//Device Model
+//		Div outputDeviceModel = new Div();
+//		this.deviceModelDataService = DeviceModelDataService.getInstance();
+//        binderDeviceModel = new Binder<>(DeviceModel.class);
+//		MemoryBuffer bufferDeviceModel = new MemoryBuffer();
+//		Upload uploadDeviceModel = new Upload(bufferDeviceModel);
+//		uploadDeviceModel.setDropLabel(new Label("Upload files in .csv format for Data Device Model (WIP)"));
+//		uploadDeviceModel.addSucceededListener(event -> {			
+//			//readDevices(bufferDeviceModel.getInputStream());
+//		});
+//		add(uploadDeviceModel, outputDeviceModel);
+//		
+//		//Producer
+//		Div outputProducer = new Div();
+//		this.producerDataService = ProducerDataService.getInstance();
+//        binderProducer = new Binder<>(Producer.class);
+//		MemoryBuffer bufferProducer = new MemoryBuffer();
+//		Upload uploadProducer = new Upload(bufferProducer);
+//		uploadProducer.setDropLabel(new Label("Upload files in .csv format for Data Producer (WIP)"));
+//		uploadProducer.addSucceededListener(event -> {			
+//			//readDevices(bufferProducer.getInputStream());
+//		});
+//		add(uploadProducer, outputProducer);
+//		
+//		//Customer
+//		Div outputCustomer = new Div();
+//		this.customerDataService = CustomerDataService.getInstance();
+//        binderCustomer = new Binder<>(Customer.class);
+//		MemoryBuffer bufferCustomer = new MemoryBuffer();
+//		Upload uploadCustomer = new Upload(bufferCustomer);
+//		uploadCustomer.setDropLabel(new Label("Upload files in .csv format for Data Customer (WIP)"));
+//		uploadCustomer.addSucceededListener(event -> {			
+//			//readDevices(bufferCustomer.getInputStream());
+//		});
+//		add(uploadCustomer, outputCustomer);
+//		
+//		//User
+//		Div outputUser = new Div();
+//		this.userDataService = UserDataService.getInstance();
+//        binderUser = new Binder<>(User.class);
+//		MemoryBuffer bufferUser = new MemoryBuffer();
+//		Upload uploadUser = new Upload(bufferUser);
+//		uploadUser.setDropLabel(new Label("Upload files in .csv format for Data User (WIP)"));
+//		uploadUser.addSucceededListener(event -> {			
+//			//readDevices(bufferUser.getInputStream());
+//		});
+//		add(uploadUser, outputUser);
 
 	}
 
@@ -166,10 +163,10 @@ public class UploadDataView extends Div {
 		colDeviceModels.addAll(DeviceModelDataService.getInstance().getAll());
 
 		try (CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);) {
-				currentDevice = new Device();
+			currentDevice = new Device();
 			for (CSVRecord csvRecord : csvParser) {
 				currentDeviceModel = DeviceModelDataService.getInstance().getDeviceModelByArtNr(csvRecord.get(0));
-				if(currentDeviceModel == null){
+				if (currentDeviceModel == null) {
 					Notification.show("Reading Data failed!");
 					return;
 				}
@@ -183,13 +180,10 @@ public class UploadDataView extends Div {
 				}
 				deviceService.update(currentDevice);
 			}
-
 		} catch (IOException e) {
 			Notification.show(e.toString());
 			e.printStackTrace();
 		}
-
 		Notification.show("Reading Data was Successfull!");
-		
 	}
 }
