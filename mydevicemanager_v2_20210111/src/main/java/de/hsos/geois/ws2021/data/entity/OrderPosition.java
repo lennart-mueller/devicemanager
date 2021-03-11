@@ -6,6 +6,8 @@ import javax.persistence.ManyToOne;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
+// Order position of a DeviceOrder to specify quantity and DeviceModel
+
 @Entity
 public class OrderPosition extends AbstractEntity {
 	

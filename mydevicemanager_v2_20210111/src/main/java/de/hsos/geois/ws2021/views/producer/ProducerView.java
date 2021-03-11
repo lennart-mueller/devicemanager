@@ -37,7 +37,7 @@ public class ProducerView extends Div {
 	private static final long serialVersionUID = -3436063662854717622L;
 
 	private Grid<Producer> grid;
-	
+	// producer information
 	private TextField companyName = new TextField();
 	private TextField salutation = new TextField();
     private TextField firstName = new TextField();
@@ -220,7 +220,6 @@ public class ProducerView extends Div {
     	binder.readBean(this.producer);
     	if (customer!=null) {
     		binder.bindInstanceFields(this);
-//	        deviceGrid.setItems(this.customer.getDevices());
     	} else {
     		deviceModelGrid.setItems(new ArrayList<DeviceModel>());
     	}

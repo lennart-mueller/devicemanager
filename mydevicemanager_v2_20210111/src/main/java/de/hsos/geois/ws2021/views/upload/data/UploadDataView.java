@@ -158,6 +158,10 @@ public class UploadDataView extends Div {
 
 	}
 
+	/**
+	 * Reads Device data from a csv file and on success adds the Devices to the data records
+	 * @param stream
+	 */
 	private void readDevices(InputStream stream) {
 
 		InputStreamReader isReader = new InputStreamReader(stream);

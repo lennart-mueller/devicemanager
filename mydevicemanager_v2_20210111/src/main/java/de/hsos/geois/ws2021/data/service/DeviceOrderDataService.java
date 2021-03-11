@@ -20,8 +20,6 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 	private static DeviceOrderDataService INSTANCE;
     
     public static final String SORT_ON_ID = "do.id";
-//	public static final String SORT_ON_DEVICEMODEL = "do.deviceModel";
-//	public static final String SORT_ON_QUANTITY = "do.quantity";
 	public static final String SORT_ON_ORDERDATE = "do.orderDate";
 	public static final String SORT_ON_DELIVERYDATE = "do.deliveryDate";
 	
@@ -30,7 +28,7 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 	}
 
 	/**
-	 * @return a reference to an example facade for Device objects.
+	 * @return a reference to an example facade for DeviceOrder objects.
 	 */
 	public static DeviceOrderDataService getInstance() {
 		if (INSTANCE == null) {
@@ -59,12 +57,25 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 		return DeviceOrder.class;
 	}
 	
+	/**
+	 * 
+	 * @param filter
+	 * @return number of DeviceOrders matching the filter
+	 */
 	public int countDeviceOrders(String filter) {
 		String queryString = "SELECT count(do) FROM DeviceOrder do WHERE (CONCAT(do.id, '') LIKE :filter "
 				+ "OR LOWER(do.orderDate) LIKE :filter)";
 		return super.count(queryString, filter);
 	}
 	
+	/**
+	 * 
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param sortOrders
+	 * @return collection of DeviceOrders complying the given parameters
+	 */
 	public Collection<DeviceOrder> fetchDeviceOrders(String filter, int limit, int offset, List<QuerySortOrder> sortOrders) {
 		
 		final String preparedFilter = prepareFilter(filter);
@@ -86,10 +97,4 @@ public class DeviceOrderDataService extends DataService<DeviceOrder> {
 			     .setMaxResults(limit)
 				 .getResultList());
 	}
-
-//	public Collection<DeviceOrder> getDeviceOrdersOfProducer(String producer) {
-//		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT do FROM DeviceOrder do WHERE do.producer = :producer ORDER BY do.id", DeviceOrder.class)
-//				.setParameter("producer", producer)
-//				.getResultList());
-//	}
 }

@@ -7,6 +7,8 @@ import javax.persistence.ManyToOne;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
+// Tracking Device
+
 @Entity
 public class Device extends AbstractEntity {
 	

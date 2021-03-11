@@ -29,7 +29,7 @@ public class DeviceModelDataService extends DataService<DeviceModel> {
 	}
 
 	/**
-	 * @return a reference to an example facade for Device objects.
+	 * @return a reference to an example facade for DeviceModel objects.
 	 */
 	public static DeviceModelDataService getInstance() {
 		if (INSTANCE == null) {
@@ -58,6 +58,11 @@ public class DeviceModelDataService extends DataService<DeviceModel> {
 		return DeviceModel.class;
 	}
 	
+	/**
+	 * 
+	 * @param filter
+	 * @return number of DeviceModels matching the filter
+	 */
 	public int countDeviceModels(String filter) {
 		String queryString = "SELECT count(dm) FROM DeviceModel dm WHERE (CONCAT(dm.id, '') LIKE :filter "
 				+ "OR LOWER(dm.name) LIKE :filter "
@@ -65,6 +70,14 @@ public class DeviceModelDataService extends DataService<DeviceModel> {
 		return super.count(queryString, filter);
 	}
 	
+	/**
+	 * 
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param sortOrders
+	 * @return collection of DeviceModels complying the given parameters
+	 */
 	public Collection<DeviceModel> fetchDeviceModels(String filter, int limit, int offset, List<QuerySortOrder> sortOrders) {
 		
 		final String preparedFilter = prepareFilter(filter);
@@ -88,12 +101,22 @@ public class DeviceModelDataService extends DataService<DeviceModel> {
 				 .getResultList());
 	}
 
+	/**
+	 * 
+	 * @param producer
+	 * @return DeviceModels for the provided Producer
+	 */
 	public Collection<DeviceModel> getDeviceModelsOfProducer(Producer producer) {
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT dm FROM DeviceModel dm WHERE dm.producer = :producer ORDER BY dm.name", DeviceModel.class)
 				.setParameter("producer", producer)
 				.getResultList());
 	}
 	
+	/**
+	 * 
+	 * @param artNr
+	 * @return DeviceModels matching the given article number
+	 */
 	public DeviceModel getDeviceModelByArtNr(String artNr) {
 		Collection<DeviceModel> deviceModels;
 		deviceModels = EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT dm FROM DeviceModel dm WHERE dm.artNr = :artNr ORDER BY dm.name", DeviceModel.class)
