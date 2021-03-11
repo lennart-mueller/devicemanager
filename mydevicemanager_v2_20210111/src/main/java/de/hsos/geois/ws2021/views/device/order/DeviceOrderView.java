@@ -419,12 +419,11 @@ public class DeviceOrderView extends Div {
 	}
 	
 	/**
-	 * 
+	 * Simulates sending an e-mail with the order information to the producer and saves the order
 	 */
 	private void openMailControlDialog() {
 		mailControlDialog = new Dialog();
 		mailControlDialog.setWidth("800px");
-//		controllDialog.setHeight("500px");;
 		
 		Div mailDiv = new Div();
 		mailDiv.setSizeFull();
