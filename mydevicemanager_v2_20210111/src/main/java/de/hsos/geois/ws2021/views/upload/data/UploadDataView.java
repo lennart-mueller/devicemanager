@@ -101,6 +101,8 @@ public class UploadDataView extends Div {
 		MemoryBuffer bufferDevice = new MemoryBuffer();
 		Upload uploadDevice = new Upload(bufferDevice);
 		uploadDevice.setDropLabel(new Label("Upload files in .csv format for Data Device"));
+		//uploadDevice.setMaxFiles(1);
+		//uploadDevice.setMaxFileSize(300);
 		uploadDevice.addSucceededListener(event -> {
 			readDevices(bufferDevice.getInputStream());
 		});

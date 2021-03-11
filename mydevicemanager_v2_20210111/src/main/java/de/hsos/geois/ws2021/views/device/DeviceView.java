@@ -1,5 +1,7 @@
 package de.hsos.geois.ws2021.views.device;
 
+import java.util.Collection;
+
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -11,9 +13,11 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -38,6 +42,8 @@ public class DeviceView extends Div {
 	private Grid<Device> grid;
 	
     private TextField serialNr = new TextField();
+    private Select<String> isDelivered = new Select<>();
+
     
     private ComboBox<Customer> customer = new ComboBox<Customer>();
     private ComboBox<DeviceModel> deviceModel = new ComboBox<DeviceModel>();
@@ -50,12 +56,13 @@ public class DeviceView extends Div {
     
     private Device currentDevice = new Device();
 
+    private DeviceDataService deviceService;
 
     public DeviceView() {
         setId("my-device-manager-view");
         // Configure Grid
         grid = new Grid<>(Device.class);
-        grid.setColumns("deviceModel", "serialNr");
+        grid.setColumns("deviceModel", "serialNr", "isDelivered");
         grid.setDataProvider(new DeviceDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
@@ -117,7 +124,60 @@ public class DeviceView extends Div {
             clearForm();
             refreshGrid();
         });
-       
+
+        save.addClickListener(e -> {
+            try {
+                if (this.currentDevice == null) {
+                    this.currentDevice = new Device();
+                }
+                binder.writeBean(this.currentDevice);
+                this.currentDevice = deviceService.update(this.currentDevice);
+                clearForm();
+                refreshGrid();
+                Notification.show("Device details stored.");
+            } catch (ValidationException validationException) {
+                Notification.show("An exception happened while trying to store the device details.");
+            }
+        });
+        
+        // add users to combobox user
+        customer.setItems(CustomerDataService.getInstance().getAll());
+        
+        customer.addValueChangeListener(event -> {
+        	if (event.isFromClient() && event.getValue()!=null) {
+        		event.getValue().addDevice(this.currentDevice);
+        		CustomerDataService.getInstance().save(event.getValue());
+        		this.currentDevice.setCustomer(event.getValue());
+        		try {
+					binder.writeBean(this.currentDevice);
+				} catch (ValidationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                this.currentDevice = deviceService.update(this.currentDevice);
+
+        	}
+        });
+        
+		deviceModel.setItems(DeviceModelDataService.getInstance().getAll());
+        
+        deviceModel.addValueChangeListener(event -> {
+        	if (event.isFromClient() && event.getValue()!=null) {
+        		event.getValue().addDevice(this.currentDevice);
+        		DeviceModelDataService.getInstance().save(event.getValue());
+        		this.currentDevice.setDeviceModel(event.getValue());
+        		try {
+					binder.writeBean(this.currentDevice);
+				} catch (ValidationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                this.currentDevice = deviceService.update(this.currentDevice);
+        	}
+        });
+        
+        isDelivered.setItems("true", "false");
+        
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
 
@@ -137,12 +197,9 @@ public class DeviceView extends Div {
 
         FormLayout formLayout = new FormLayout();
         addFormItem(editorDiv, formLayout, deviceModel, "Device Model");
-//        addFormItem(editorDiv, formLayout, name, "Device name");
-//        addFormItem(editorDiv, formLayout, artNr, "Article number");
         addFormItem(editorDiv, formLayout, serialNr, "Serial number");
-//        addFormItem(editorDiv, formLayout, purchasePrice, "Purchase price");
-//        addFormItem(editorDiv, formLayout, salesPrice, "Sales price");
         addFormItem(editorDiv, formLayout, customer, "Customer");
+        addFormItem(editorDiv, formLayout, isDelivered, "Delivered?");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);

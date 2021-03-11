@@ -118,7 +118,7 @@ public class DeviceModel extends AbstractEntity {
 //	}	
 	
 	public String toString() {
-		return " ["+getProducer()+"]" + getName();
+		return "["+getProducer()+"] " + getName();
 	}	
 //	
 //	@Override
