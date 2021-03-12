@@ -64,6 +64,14 @@ public class DeviceDataService extends DataService<Device> {
 		return super.count(queryString, filter);
 	}
 	
+	/**
+	 * 
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param sortOrders
+	 * @return collection of Devices complying the given parameters
+	 */
 	public Collection<Device> fetchDevices(String filter, int limit, int offset, List<QuerySortOrder> sortOrders) {
 		
 		final String preparedFilter = prepareFilter(filter);
@@ -86,6 +94,11 @@ public class DeviceDataService extends DataService<Device> {
 				 .getResultList());
 	}
 
+	/**
+	 * 
+	 * @param customer
+	 * @return collection of devices assigned to the customer given
+	 */
 	public Collection<Device> getDevicesOfCustomer(Customer customer) {
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT d FROM Device d WHERE d.customer = :customer ORDER BY d.serialNr", Device.class)
 				.setParameter("customer", customer)

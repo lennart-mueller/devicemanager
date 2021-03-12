@@ -1,7 +1,5 @@
 package de.hsos.geois.ws2021.views.device;
 
-import java.util.Collection;
-
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -17,7 +15,6 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -48,7 +45,6 @@ public class DeviceView extends Div {
     private ComboBox<Customer> customer = new ComboBox<Customer>();
     private ComboBox<DeviceModel> deviceModel = new ComboBox<DeviceModel>();
 
-    // Refactore these buttons in a separate (abstract) form class
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
@@ -92,7 +88,7 @@ public class DeviceView extends Div {
         // add deviceModels to combobox deviceModel
         deviceModel.setItems(DeviceModelDataService.getInstance().getAll());
        
-        // add users to combobox user
+        // add customers to combobox customer
         customer.setItems(CustomerDataService.getInstance().getAll());
        
         save.addClickListener(e -> {
@@ -140,7 +136,7 @@ public class DeviceView extends Div {
             }
         });
         
-        // add users to combobox user
+        // add customers to combobox customer
         customer.setItems(CustomerDataService.getInstance().getAll());
         
         customer.addValueChangeListener(event -> {
@@ -159,6 +155,7 @@ public class DeviceView extends Div {
         	}
         });
         
+        // add deviceModels to combobox deviceModel
 		deviceModel.setItems(DeviceModelDataService.getInstance().getAll());
         
         deviceModel.addValueChangeListener(event -> {
@@ -187,6 +184,10 @@ public class DeviceView extends Div {
         add(splitLayout);
     }
 
+    /**
+     * Creates a form for editing and creating devices
+     * @param splitLayout
+     */
     private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
         editorLayoutDiv.setId("editor-layout");

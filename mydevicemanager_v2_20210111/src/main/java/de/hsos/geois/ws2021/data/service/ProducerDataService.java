@@ -28,7 +28,7 @@ public class ProducerDataService extends DataService<Producer> {
 	}
 
 	/**
-	 * @return a reference to an example facade for Person objects.
+	 * @return a reference to an example facade for Producer objects.
 	 */
 	public static ProducerDataService getInstance() {
 		if (INSTANCE == null) {
@@ -57,6 +57,11 @@ public class ProducerDataService extends DataService<Producer> {
 		return Producer.class;
 	}
 	
+	/**
+	 * 
+	 * @param filter
+	 * @return number of Producers matching the filter
+	 */
 	public int countProducers(String filter) {
 		String queryString = "SELECT count(p) FROM Producer p WHERE (CONCAT(p.id, '') LIKE :filter "
 				+ "OR LOWER(p.companyName) LIKE :filter "
@@ -65,6 +70,14 @@ public class ProducerDataService extends DataService<Producer> {
 		return super.count(queryString, filter);
 	}
 	
+	/**
+	 * 
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param sortOrders
+	 * @return collection of Producers complying the given parameters
+	 */
 	public Collection<Producer> fetchProducers(String filter, int limit, int offset, List<QuerySortOrder> sortOrders) {
 		
 		final String preparedFilter = prepareFilter(filter);
@@ -88,7 +101,4 @@ public class ProducerDataService extends DataService<Producer> {
 			     .setMaxResults(limit)
 				 .getResultList());
 	}
-
-
-
 }

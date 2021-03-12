@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -118,12 +117,12 @@ public class DeviceOrderView extends Div {
 
         
 		// Configure Form
-		binderForDeviceOrder = new Binder<>(DeviceOrder.class);																							//BINDER
+		binderForDeviceOrder = new Binder<>(DeviceOrder.class);																							
 
 		binderForOrderPosition = new Binder<>(OrderPosition.class);
 		
 		// Bind fields. This where you'd define e.g. validation rules
-		binderForDeviceOrder.bindInstanceFields(this);																									//BINDER
+		binderForDeviceOrder.bindInstanceFields(this);																									
 		
 		binderForOrderPosition.bindInstanceFields(this);
 		
@@ -151,13 +150,16 @@ public class DeviceOrderView extends Div {
 		producer.setItems(ProducerDataService.getInstance().getAll());
 		
 		producer.addValueChangeListener(event -> {
-			deviceModel.setItems(DeviceModelDataService.getInstance().getDeviceModelsOfProducer(producer.getValue()));						//BEISPIEL WICHTIG
+			deviceModel.setItems(DeviceModelDataService.getInstance().getDeviceModelsOfProducer(producer.getValue()));						
 		});
 		
 		
         createGridLayout();
 	}
 
+	/**
+	 * Opens a new dialog to change the status of an order
+	 */
 	private void openEditStatusDialog() {
 		statusDialog = new Dialog();
 		
@@ -189,6 +191,9 @@ public class DeviceOrderView extends Div {
 		statusDialog.open();
 	}
 
+	/**
+	 * Creates the grid
+	 */
 	private void createGridLayout() {
 		VerticalLayout gridLayout = new VerticalLayout();
 		gridLayout.setId("grid-layout");
@@ -204,6 +209,9 @@ public class DeviceOrderView extends Div {
 		add(gridLayout);
 	}
 	
+	/**
+	 * Opens a dialog to add an order
+	 */
 	private void openNewOrderDialog() {
 		
 		newOrderDialog = new Dialog();
@@ -219,6 +227,7 @@ public class DeviceOrderView extends Div {
 		Button addPosition = new Button("Add Position");
 		addPosition.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
+		// disable buttons until producer is chosen
 		addPosition.setEnabled(false);
 		createMail.setEnabled(false);
 
@@ -250,6 +259,7 @@ public class DeviceOrderView extends Div {
 			if(producer.getValue()!=null && deliveryDate.getValue() != null) {
 					
 				try {
+					// disable producer choice and enable addition of order positions
 					producer.setEnabled(false);
 					deliveryDate.setEnabled(false);
 					deviceModel.setEnabled(true);
@@ -271,6 +281,7 @@ public class DeviceOrderView extends Div {
 		newOrderDiv.add(formLayout);
 		
 		posNo = 1;
+		// add position to device order
 		addPosition.addClickListener(e -> {																								
 			if(deviceModel.getValue()!=null && quantity.getValue() != null) {
 				try {
@@ -345,6 +356,9 @@ public class DeviceOrderView extends Div {
 		editorLayoutDiv.add(buttonLayout);
 	}
 	
+	/**
+	 * display of information of a created order
+	 */
 	public void openOrderDetailsDialog() {
 		orderDetailsDialog = new Dialog();
 		orderDetailsDialog.setWidth("700px");
@@ -375,6 +389,7 @@ public class DeviceOrderView extends Div {
 		amountOfPositions.setValue(String.valueOf(this.currentDeviceOrder.getAmountOfPositions()));
 		amountOfDevices.setValue(String.valueOf(this.currentDeviceOrder.getAmountOfDevices()));
 		
+		// information is read-only since the order is already sent
 		orderDate.setReadOnly(true);
 		producer.setReadOnly(true);
 		deliveryDate.setReadOnly(true);
@@ -403,10 +418,12 @@ public class DeviceOrderView extends Div {
 		field.getElement().getClassList().add("full-width");
 	}
 	
+	/**
+	 * Simulates sending an e-mail with the order information to the producer and saves the order
+	 */
 	private void openMailControlDialog() {
 		mailControlDialog = new Dialog();
 		mailControlDialog.setWidth("800px");
-//		controllDialog.setHeight("500px");;
 		
 		Div mailDiv = new Div();
 		mailDiv.setSizeFull();
@@ -421,7 +438,8 @@ public class DeviceOrderView extends Div {
 			this.currentDeviceOrder.setAmountOfPositions(this.currentDeviceOrder.getOrderPositions());
 			this.currentDeviceOrder.setAmountOfDevices(this.currentDeviceOrder.getOrderPositions());
 			
-			this.currentDeviceOrder = deviceOrderService.update(this.currentDeviceOrder);			//update(...) : Klasse wird in Datenbank neu erstellt oder aktualisiert
+			// creates or updates DeviceOrder depending on whether this DeviceOrder already exists
+			this.currentDeviceOrder = deviceOrderService.update(this.currentDeviceOrder);
 			
 			clearForm();
 			mailControlDialog.close();
@@ -436,6 +454,10 @@ public class DeviceOrderView extends Div {
 		});
 	}
 	
+	/**
+	 * Creates an e-mail layout
+	 * @param wrapper
+	 */
 	public void createMailLayout(Div wrapper) {
 		
 		FormLayout mailItemsLayout = new FormLayout();
@@ -487,6 +509,10 @@ public class DeviceOrderView extends Div {
 		field.getElement().getClassList().add("full-width");
 	}
 	
+	/**
+	 * 
+	 * @return initial text for an e-mail to order devices including the producers information
+	 */
 	public String createMailText() {
 		return "Dear " + currentDeviceOrder.getProducer().getSalutation() + " " + currentDeviceOrder.getProducer().getLastName() + ",\n"
 				+ "I am writing to order the following device models:\n"

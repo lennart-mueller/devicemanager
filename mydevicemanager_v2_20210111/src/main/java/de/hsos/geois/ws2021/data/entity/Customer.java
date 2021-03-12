@@ -14,7 +14,7 @@ public class Customer extends AbstractEntity {
 
 	private String companyName = "";
 	
-	// contact person
+	// customer information
 	private String salutation = "";
 	private String firstName = "";
 	private String lastName = "";

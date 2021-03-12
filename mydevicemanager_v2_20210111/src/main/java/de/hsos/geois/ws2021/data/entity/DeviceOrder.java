@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
+// Order of Devices from a chosen Producer having different OrderPositions
+
 @Entity
 public class DeviceOrder extends AbstractEntity {
 	

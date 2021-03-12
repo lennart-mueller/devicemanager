@@ -9,6 +9,8 @@ import javax.persistence.OneToMany;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
+// Producer who manufactures Devices
+
 @Entity
 public class Producer extends AbstractEntity {
 

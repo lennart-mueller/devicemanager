@@ -43,8 +43,6 @@ public class DeviceModelView extends Div {
     
     private ComboBox<Producer> producer = new ComboBox<Producer>();
 
-
-    // Refactore these buttons in a separate (abstract) form class
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
@@ -67,7 +65,6 @@ public class DeviceModelView extends Div {
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-//              Device deviceFromBackend = deviceService.getById(event.getValue().getId());
             	DeviceModel deviceModelFromBackend = event.getValue();
                 // when a row is selected but the data is no longer available, refresh grid
                 if (deviceModelFromBackend != null) {
@@ -107,7 +104,7 @@ public class DeviceModelView extends Div {
             }
         });
         
-        // add users to combobox user
+        // add Producers to combobox producer
         producer.setItems(ProducerDataService.getInstance().getAll());
 
         SplitLayout splitLayout = new SplitLayout();
@@ -119,6 +116,10 @@ public class DeviceModelView extends Div {
         add(splitLayout);
     }
 
+    /**
+     * Creates the DeviceModel form
+     * @param splitLayout
+     */
     private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
         editorLayoutDiv.setId("editor-layout");

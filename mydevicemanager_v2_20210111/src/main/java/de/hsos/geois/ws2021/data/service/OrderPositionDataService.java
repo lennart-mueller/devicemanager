@@ -30,7 +30,7 @@ public class OrderPositionDataService extends DataService<OrderPosition> {
 	}
 
 	/**
-	 * @return a reference to an example facade for Device objects.
+	 * @return a reference to an example facade for OrderPosition objects.
 	 */
 	public static OrderPositionDataService getInstance() {
 		if (INSTANCE == null) {
@@ -59,12 +59,25 @@ public class OrderPositionDataService extends DataService<OrderPosition> {
 		return OrderPosition.class;
 	}
 	
+	/**
+	 * 
+	 * @param filter
+	 * @return number of OrderPositions matching the filter
+	 */
 	public int countOrderPositions(String filter) {
 		String queryString = "SELECT count(op) FROM OrderPosition op WHERE (CONCAT(op.id, '') LIKE :filter "
 				+ "OR LOWER(op.quantity) LIKE :filter)";
 		return super.count(queryString, filter);
 	}
 	
+	/**
+	 * 
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param sortOrders
+	 * @return collection of OrderPositions complying the given parameters
+	 */
 	public Collection<OrderPosition> fetchOrderPositions(String filter, int limit, int offset, List<QuerySortOrder> sortOrders) {
 		
 		final String preparedFilter = prepareFilter(filter);
@@ -87,6 +100,11 @@ public class OrderPositionDataService extends DataService<OrderPosition> {
 				 .getResultList());
 	}
 
+	/**
+	 * 
+	 * @param deviceOrder
+	 * @return OrderPositions for the provided DeviceOrder
+	 */
 	public Collection<OrderPosition> getOrderPositionsOfDeviceOrder(DeviceOrder deviceOrder) {
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery("SELECT op FROM OrderPosition op WHERE op.deviceOrder = :deviceOrder ORDER BY op.id", OrderPosition.class)
 				.setParameter("deviceOrder", deviceOrder)

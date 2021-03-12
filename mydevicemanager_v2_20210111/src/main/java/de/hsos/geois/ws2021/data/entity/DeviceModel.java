@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
+// Model of a Device which a Producer manufactures
+
 @Entity
 public class DeviceModel extends AbstractEntity {
 
@@ -110,12 +112,6 @@ public class DeviceModel extends AbstractEntity {
 	public boolean removeDevice(Device device) {
 		return getDevices().remove(device);
 	}
-	
-	
-	//TODO: Mehrere ToString Methoden anlegen 1x für Device Order 1x für Devices
-//	public String toString() {
-//		return getProducer() + " " + getName() + " " + getArtNr() + " " + getPurchasePrice() + " " + getSalesPrice();
-//	}	
 	
 	public String toString() {
 		return "["+getProducer()+"] " + getName();
