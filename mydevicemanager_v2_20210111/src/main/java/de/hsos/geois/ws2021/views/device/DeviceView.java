@@ -173,7 +173,7 @@ public class DeviceView extends Div {
         	}
         });
         
-        isDelivered.setItems("true", "false");
+        isDelivered.setItems("inhouse", "offside");
         
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -200,7 +200,7 @@ public class DeviceView extends Div {
         addFormItem(editorDiv, formLayout, deviceModel, "Device Model");
         addFormItem(editorDiv, formLayout, serialNr, "Serial number");
         addFormItem(editorDiv, formLayout, customer, "Customer");
-        addFormItem(editorDiv, formLayout, isDelivered, "Delivered?");
+        addFormItem(editorDiv, formLayout, isDelivered, "Status");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);
@@ -248,5 +248,6 @@ public class DeviceView extends Div {
         deviceModel.setValue(value.getDeviceModel());
     	serialNr.setValue(value.getSerialNr());
     	customer.setValue(value.getCustomer());
+    	isDelivered.setValue(value.getIsDelivered());
     }
 }
