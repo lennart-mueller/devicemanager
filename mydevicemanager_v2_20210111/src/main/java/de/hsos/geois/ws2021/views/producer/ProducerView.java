@@ -159,7 +159,7 @@ public class ProducerView extends Div {
         	       clickedDeviceModel -> {
         	           this.producer.removeDeviceModel(clickedDeviceModel);
         	           clickedDeviceModel.setProducer(null);
-					   // persist customer
+					   // persist producer
         	           try {
 							binder.writeBean(this.producer);
 							this.producer = producerService.update(this.producer);
