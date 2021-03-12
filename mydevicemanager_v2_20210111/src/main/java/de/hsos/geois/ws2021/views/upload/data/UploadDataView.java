@@ -95,57 +95,57 @@ public class UploadDataView extends Div {
 		});
 		add(uploadDevice, outputDevice);
 
-		//Device Model
-		Div outputDeviceModel = new Div();
-		this.deviceModelDataService = DeviceModelDataService.getInstance();
-		binderDeviceModel = new Binder<>(DeviceModel.class);
-		MemoryBuffer bufferDeviceModel = new MemoryBuffer();
-		Upload uploadDeviceModel = new Upload(bufferDeviceModel);
-		uploadDeviceModel.setDropLabel(new Label("Upload files in .csv format for Data Device Model (WIP)"));
-		uploadDeviceModel.addSucceededListener(event -> {	
-		//				TODO: readDeviceModel
-			//readDevices(bufferDeviceModel.getInputStream());
-		});
-		add(uploadDeviceModel, outputDeviceModel);
-		
-		//Producer
-		Div outputProducer = new Div();
-		this.producerDataService = ProducerDataService.getInstance();
-		binderProducer = new Binder<>(Producer.class);
-		MemoryBuffer bufferProducer = new MemoryBuffer();
-		Upload uploadProducer = new Upload(bufferProducer);
-		uploadProducer.setDropLabel(new Label("Upload files in .csv format for Data Producer (WIP)"));
-		uploadProducer.addSucceededListener(event -> {
-		//		TODO: readProducer
-			//readDevices(bufferProducer.getInputStream());
-		});
-		add(uploadProducer, outputProducer);
-		
-		//Customer
-		Div outputCustomer = new Div();
-		this.customerDataService = CustomerDataService.getInstance();
-		binderCustomer = new Binder<>(Customer.class);
-		MemoryBuffer bufferCustomer = new MemoryBuffer();
-		Upload uploadCustomer = new Upload(bufferCustomer);
-		uploadCustomer.setDropLabel(new Label("Upload files in .csv format for Data Customer (WIP)"));
-		uploadCustomer.addSucceededListener(event -> {	
-		//		TODO: readCustomer
-			//readDevices(bufferCustomer.getInputStream());
-		});
-		add(uploadCustomer, outputCustomer);
-		
-		//User
-		Div outputUser = new Div();
-		this.userDataService = UserDataService.getInstance();
-		binderUser = new Binder<>(User.class);
-		MemoryBuffer bufferUser = new MemoryBuffer();
-		Upload uploadUser = new Upload(bufferUser);
-		uploadUser.setDropLabel(new Label("Upload files in .csv format for Data User (WIP)"));
-		uploadUser.addSucceededListener(event -> {	
-		//		TODO: readUser
-			//readDevices(bufferUser.getInputStream());
-		});
-		add(uploadUser, outputUser);
+//		//Device Model
+//		Div outputDeviceModel = new Div();
+//		this.deviceModelDataService = DeviceModelDataService.getInstance();
+//		binderDeviceModel = new Binder<>(DeviceModel.class);
+//		MemoryBuffer bufferDeviceModel = new MemoryBuffer();
+//		Upload uploadDeviceModel = new Upload(bufferDeviceModel);
+//		uploadDeviceModel.setDropLabel(new Label("Upload files in .csv format for Data Device Model (WIP)"));
+//		uploadDeviceModel.addSucceededListener(event -> {	
+//		//				TODO: readDeviceModel
+//			//readDevices(bufferDeviceModel.getInputStream());
+//		});
+//		add(uploadDeviceModel, outputDeviceModel);
+//		
+//		//Producer
+//		Div outputProducer = new Div();
+//		this.producerDataService = ProducerDataService.getInstance();
+//		binderProducer = new Binder<>(Producer.class);
+//		MemoryBuffer bufferProducer = new MemoryBuffer();
+//		Upload uploadProducer = new Upload(bufferProducer);
+//		uploadProducer.setDropLabel(new Label("Upload files in .csv format for Data Producer (WIP)"));
+//		uploadProducer.addSucceededListener(event -> {
+//		//		TODO: readProducer
+//			//readDevices(bufferProducer.getInputStream());
+//		});
+//		add(uploadProducer, outputProducer);
+//		
+//		//Customer
+//		Div outputCustomer = new Div();
+//		this.customerDataService = CustomerDataService.getInstance();
+//		binderCustomer = new Binder<>(Customer.class);
+//		MemoryBuffer bufferCustomer = new MemoryBuffer();
+//		Upload uploadCustomer = new Upload(bufferCustomer);
+//		uploadCustomer.setDropLabel(new Label("Upload files in .csv format for Data Customer (WIP)"));
+//		uploadCustomer.addSucceededListener(event -> {	
+//		//		TODO: readCustomer
+//			//readDevices(bufferCustomer.getInputStream());
+//		});
+//		add(uploadCustomer, outputCustomer);
+//		
+//		//User
+//		Div outputUser = new Div();
+//		this.userDataService = UserDataService.getInstance();
+//		binderUser = new Binder<>(User.class);
+//		MemoryBuffer bufferUser = new MemoryBuffer();
+//		Upload uploadUser = new Upload(bufferUser);
+//		uploadUser.setDropLabel(new Label("Upload files in .csv format for Data User (WIP)"));
+//		uploadUser.addSucceededListener(event -> {	
+//		//		TODO: readUser
+//			//readDevices(bufferUser.getInputStream());
+//		});
+//		add(uploadUser, outputUser);
 
 	}
 
