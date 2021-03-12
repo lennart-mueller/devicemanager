@@ -173,7 +173,7 @@ public class DeviceView extends Div {
         	}
         });
         
-        isDelivered.setItems("inhouse", "offside");
+        isDelivered.setItems("inhouse", "offsite");
         
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
